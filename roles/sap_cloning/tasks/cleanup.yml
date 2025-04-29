@@ -38,7 +38,10 @@
   set_fact:
     new_volume_name: "{{ volume_name }}_tobedeleted_{{ '%Y%m%d' | strftime((('%s' | strftime | int) + 2592000)) }}"
     initial_volume_name: "{{ volume_name }}"
-  when: not delete_volume_clone_06 and lun_info.ontap_info.storage_luns.num_records > 0
+  when: 
+    - not delete_volume_clone_06 
+    - lun_info.ontap_info.storage_luns.num_records > 0
+    - not skip_rename
 
 - name: Rename volume {{ volume_name }}
   ansible.builtin.include_role:
@@ -47,4 +50,7 @@
     vserver: "{{ vserver_sap_fc }}"
     name: "{{ new_volume_name }}"
     from_name: "{{ initial_volume_name }}"
-  when: not delete_volume_clone_06 and lun_info.ontap_info.storage_luns.num_records > 0
+  when:
+    - not delete_volume_clone_06 
+    - lun_info.ontap_info.storage_luns.num_records > 0
+    - not skip_rename

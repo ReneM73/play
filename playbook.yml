@@ -16,6 +16,7 @@
   gather_facts: false
   vars:
     delete_volume_clone_05: false
+    skip_rename: false
   tasks:
     - name: Cleanup task. Unmap Luns, delete or rename volume _06
       ansible.builtin.include_role:
@@ -61,6 +62,7 @@
       vars:
         volume_name: "{{ volume_sap_clone[0].destination_name }}"
         delete_volume_clone_05: true
+        skip_rename: true
       when: not clean_only
 
 # - name: Send mail notification
