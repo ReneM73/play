@@ -3,12 +3,12 @@
   hosts: aix_jumphost
   gather_facts: false
   tasks:
-    - name: Execute the refresh prepare aix command
-      # ansible.builtin.raw: "{{ refresh_prepare_cmd }} {{ source_server }} {{ destination_server }}"
-      ansible.builtin.raw: "echo 'WFA STATUS MESSAGE : SCRIPT 1_refresh_prepare.ksh COMPLETED SUCCESSFULLY'"
-      register: myout
-      failed_when: "'WFA STATUS MESSAGE : SCRIPT 1_refresh_prepare.ksh COMPLETED SUCCESSFULLY' not in myout.stdout_lines"
-      when: execute_refresh_prepare_aix_command and sap_hosts_group == "sap"
+#    - name: Execute the refresh prepare aix command
+#      # ansible.builtin.raw: "{{ refresh_prepare_cmd }} {{ source_server }} {{ destination_server }}"
+#      ansible.builtin.raw: "echo 'WFA STATUS MESSAGE : SCRIPT 1_refresh_prepare.ksh COMPLETED SUCCESSFULLY'"
+#      register: myout
+#      failed_when: "'WFA STATUS MESSAGE : SCRIPT 1_refresh_prepare.ksh COMPLETED SUCCESSFULLY' not in myout.stdout_lines"
+#      when: execute_refresh_prepare_aix_command and sap_hosts_group == "sap"
 
 - name: Execute SAP Cloning Role
   hosts: "{{ hosts_group | default('sap') }}"
@@ -20,15 +20,15 @@
       vars:
         delete_clone_volume_05: false
 
-- name: Execute a script on the AIX jump host
-  hosts: aix_jumphost
-  gather_facts: false
-  tasks:
-    - name: Execute the refresh complete aix command
-      ansible.builtin.raw: "{{ refresh_complete_cmd }} {{ source_server }} {{ destination_server }}"
-      register: myout
-      failed_when: "'WFA STATUS MESSAGE : SCRIPT 2_refresh_complete.ksh COMPLETED SUCCESSFULLY' not in myout.stdout_lines"
-      when: execute_refresh_complete_aix_command and sap_hosts_group == "sap"
+# - name: Execute a script on the AIX jump host
+#   hosts: aix_jumphost
+#   gather_facts: false
+#   tasks:
+#     - name: Execute the refresh complete aix command
+#       ansible.builtin.raw: "{{ refresh_complete_cmd }} {{ source_server }} {{ destination_server }}"
+#       register: myout
+#       failed_when: "'WFA STATUS MESSAGE : SCRIPT 2_refresh_complete.ksh COMPLETED SUCCESSFULLY' not in myout.stdout_lines"
+#       when: execute_refresh_complete_aix_command and sap_hosts_group == "sap"
 
 - name: Delete clone volume sap_volume[0].destination_name
   hosts: "{{ sap_hosts_group }}"
