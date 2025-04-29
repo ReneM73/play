@@ -19,4 +19,5 @@
   loop: "{{ volume.qtrees }}"
   loop_control:
     loop_var: qtree
+    label: qtree.name
   when: swapvg_size is not defined or swapvg_size != 0
