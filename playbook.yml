@@ -14,6 +14,9 @@
   hosts: "{{ hosts_group | default('sap') }}"
   serial: 1
   gather_facts: false
+  vars:
+    source_server: server308
+    destination_server: server309
   tasks:
     - name: Cleanup task. Unmap Luns, delete or rename volume _06
       ansible.builtin.include_role:
@@ -26,6 +29,9 @@
   hosts: "{{ hosts_group | default('sap') }}"
   serial: 1
   gather_facts: false
+  vars:
+    source_server: server308
+    destination_server: server309
   tasks:
     - name: Cloning task. Clone from latest snapshot and mount all LUNs in it
       ansible.builtin.include_role:
@@ -51,6 +57,9 @@
   hosts: "{{ hosts_group | default('sap') }}"
   serial: 1
   gather_facts: false
+  vars:
+    source_server: server308
+    destination_server: server309
   tasks:
     - name: Cleanup task. Unmap Luns and delete {{ volume_sap_clone[0].destination_name }}
       ansible.builtin.include_role:
