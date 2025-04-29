@@ -1,0 +1,27 @@
+- name: Get snapmirror info for {{ volume.name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: cli.yml
+  vars:
+    command: snapmirror/list-destination
+    verb: GET
+    params:
+      source_vserver: "{{ vserver_sap_fc }}"
+      source_volume: "{{ volume.name }}"
+    result_var: snapmirror_destination_info
+
+- name: Delete snapmirror for volume {{ volume.name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.snapmirror
+  vars:
+    state: absent
+    source_hostname: "{{ cluster_name }}"
+    destination_hostname: "{{ backup_cluster_name }}"
+    source_path: "{{ snapmirror_destination_info.msg.records[0].source_path }}"
+    destination_path: "{{ snapmirror_destination_info.msg.records[0].destination_path }}"
+  when: snapmirror_destination_info.msg.num_records > 0
+
+- name: Set Return Parameter for e-mail
+  ansible.builtin.set_fact:
+    deleted_snapmirrors: "{{ deleted_snapmirrors | default([]) + [snapmirror_destination_info.msg.records[0].destination_path] }}"
+  when: snapmirror_destination_info.msg.num_records > 0
