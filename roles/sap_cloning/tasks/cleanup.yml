@@ -1,0 +1,48 @@
+---
+- name: Get all LUNs from volume {{ volume_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: info.yml
+  vars:
+    gather_subset: storage/luns
+    fields: '*'
+    parameters:
+      svm.name: "{{ vserver_sap_fc }}"
+      location.volume.name: "{{ volume_name }}"
+    result_var: lun_info
+
+- name: Unmap all LUNs in volume {{ volume_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.lun
+    tasks_from: map.yml
+  vars:
+    vserver: "{{ vserver_sap_fc }}"
+    path: "{{ item.name }}"
+    initiator_group_name: "fcp_{{ destination_server }}_01"
+    state: absent
+  loop: "{{ lun_info.ontap_info.storage_luns.records }}"
+  loop_control:
+    label: "{{ item.location.logical_unit }}"
+
+- name: Delete volume if delete_volume is true
+  ansible.builtin.include_role:
+    name: sgs.ontap.volume
+  vars:
+    vserver: "{{ vserver_sap_fc }}"
+    state: absent
+    name: "{{ volume_name }}"
+  when: delete_volume or delete_clone_volume_05
+
+- name: Set new volume name
+  set_fact:
+    new_volume_name: "{{ volume_name }}_tobedeleted_{{ '%Y%m%d' | strftime((('%s' | strftime | int) + 2592000)) }}"
+    initial_volume_name: "{{ volume_name }}"
+
+- name: Rename volume {{ volume_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.volume
+  vars:
+    vserver: "{{ vserver_sap_fc }}"
+    name: "{{ new_volume_name }}"
+    from_name: "{{ initial_volume_name }}"
+  when: not delete_volume

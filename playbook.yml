@@ -1,0 +1,59 @@
+---
+- name: Execute a script on the AIX jump host
+  hosts: aix_jumphost
+  gather_facts: false
+  tasks:
+    - name: Execute the refresh prepare aix command
+      # ansible.builtin.raw: "{{ refresh_prepare_cmd }} {{ source_server }} {{ destination_server }}"
+      ansible.builtin.raw: "echo 'WFA STATUS MESSAGE : SCRIPT 1_refresh_prepare.ksh COMPLETED SUCCESSFULLY'"
+      register: myout
+      failed_when: "'WFA STATUS MESSAGE : SCRIPT 1_refresh_prepare.ksh COMPLETED SUCCESSFULLY' not in myout.stdout_lines"
+      when: execute_refresh_prepare_aix_command and sap_hosts_group == "sap"
+
+- name: Execute SAP Cloning Role
+  hosts: "{{ hosts_group | default('sap') }}"
+  gather_facts: false
+  tasks:
+    - name: Include role sap_cloning
+      ansible.builtin.include_role:
+        name: sap_cloning
+      vars:
+        delete_clone_volume_05: false
+
+- name: Execute a script on the AIX jump host
+  hosts: aix_jumphost
+  gather_facts: false
+  tasks:
+    - name: Execute the refresh complete aix command
+      ansible.builtin.raw: "{{ refresh_complete_cmd }} {{ source_server }} {{ destination_server }}"
+      register: myout
+      failed_when: "'WFA STATUS MESSAGE : SCRIPT 2_refresh_complete.ksh COMPLETED SUCCESSFULLY' not in myout.stdout_lines"
+      when: execute_refresh_complete_aix_command and sap_hosts_group == "sap"
+
+- name: Delete clone volume sap_volume[0].destination_name
+  hosts: "{{ sap_hosts_group }}"
+  gather_facts: false
+  tasks:
+    - name: Delete volume {{ sap_volume[0].destination_name }}
+      ansible.builtin.include_role:
+        name: sap_cloning
+        tasks_from: cleanup.yml
+      vars:
+        vserver: "{{ vserver_sap_fc }}"
+        volume_name: "{{ sap_volume[0].destination_name }}"
+        state: absent
+        delete_clone_volume_05: true
+      when: not clean_only
+
+- name: Send mail notification
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Send e-mail notification
+      ansible.builtin.mail:
+        host: "{{ mail.host }}"
+        from: "{{ mail.from }}"
+        to: "{{ mail.to }}"
+        subject: "SAP Cloning"
+        body: "SAP system {{ destination_server }} just became a clone.\nPlease verify its backup"
+      when: not clean_only

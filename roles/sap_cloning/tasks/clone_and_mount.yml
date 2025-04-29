@@ -1,0 +1,52 @@
+---
+- name: Get all snapshot starting with SP_ from volume {{ volume.source_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: info.yml
+  vars:
+    gather_subset: storage/volumes/snapshots
+    owning_resource:
+      svm_name: "{{ vserver_sap_fc }}"
+      volume_name: "{{ volume.source_name }}"
+    parameters:
+      name: "SP_*"
+    result_var: snapshot_info
+
+- name: Clone volume {{ volume.source_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.volume
+    tasks_from: clone.yml
+  vars:
+    vserver: "{{ vserver_sap_fc }}"
+    parent_volume: "{{ volume.source_name }}"
+    name: "{{ volume.destination_name }}"
+    parent_snapshot: "{{ snapshot_info.ontap_info.storage_volumes_snapshots.records[-1].name }}"
+
+- name: Get all LUNs in volume {{ volume.destination_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: info.yml
+  vars:
+    gather_subset: storage/luns
+    fields: "*"
+    parameters:
+      svm.name: "{{ vserver_sap_fc }}"
+      location.volume.name: "{{ volume.destination_name }}"
+      status.mapped: false
+    result_var: lun_info
+
+- name: Mount all unmapped LUNs in volume {{ volume.destination_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.lun
+    tasks_from: map.yml
+  vars:
+    state: present
+    vserver: "{{ vserver_sap_fc }}"
+    path: "{{ lun.name }}"
+    initiator_group_name: "fcp_{{ destination_server }}_01"
+    lun_id: "{{ lun.name[-6:-4] }}"
+  loop: "{{ lun_info.ontap_info.storage_luns.records }}"
+  loop_control:
+    label: "Mount LUN: {{ lun.location.logical_unit }}"
+    loop_var: lun
+  when: lun_info.ontap_info.storage_luns.num_records > 0
