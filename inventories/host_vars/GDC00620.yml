@@ -1,7 +1,0 @@
----
-refresh_prepare_cmd: "sudo /root/7_tools/CLONE_SAP/1_refresh_prepare.ksh"
-refresh_complete_cmd: "sudo /root/7_tools/CLONE_SAP/2_refresh_complete.ksh"
-removal_check_cmd: "sudo /root/7_tools/WFAscripts/nseries-removal-check.sh"
-ansible_user: "itsoper"
-get_wwn_cmd: "/home/root/7_tools/get_wwn_for_wfa.sh"
-

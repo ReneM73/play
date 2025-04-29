@@ -1,8 +1,0 @@
-# Variables specified in this file will only be applied to host that belong to group 'all'
----
-validate_certs: false
-sap_hosts_group: "sap"
-mail:
-  host: "smtp.swatchgroup.net"
-  from: "netapp-ansible@swatchgroup.net"
-  to: "ITSAlertStorageAdmins@swatchgroup.com"

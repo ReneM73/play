@@ -1,9 +1,0 @@
----
-cluster_name: gdcntap43
-city: Lengnau
-city_code: le
-vserver_smb_t5: gdcsvm243
-vserver_nfs_t5: gdcsvm343
-vserver_mix_t5: gdcsvm443
-vserver_smbv1_t5: gdcsvm843
-vserver_dmz_t5: gdcsvm943

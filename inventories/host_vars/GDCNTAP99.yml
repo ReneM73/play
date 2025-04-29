@@ -1,7 +1,0 @@
----
-cluster_name: gdcntap99
-city: Lab
-city_code: lab
-vserver_sap_fc: gdcsvm199
-vserver_smb: gdcsvm299
-vserver_nfs: gdcsvm399
