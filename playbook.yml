@@ -1,6 +1,6 @@
 ---
 - name: Delete SAP volumes for {{ aix_host }}
-  hosts: "{{ sap_hosts_group }}"
+  hosts: "{{ sap_hosts_group | default('sap') }}"
   gather_facts: false
   tasks:
     - name: Include role sap_delete
