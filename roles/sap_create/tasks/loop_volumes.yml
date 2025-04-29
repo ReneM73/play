@@ -6,12 +6,14 @@
     vserver: "{{ vserver_sap_fc }}"
     aggregate_name: "{{ best_aggregate }}"
     name: "{{ volume.name }}"
-    size: "{{ volume.size }}"
+    size: "{{ volume.size_gb }}"
     snapshot_policy: none
     atime_update: false
     space_guarantee: none
     percent_snapshot_space: 0
     volume_security_style: unix
+    snapshot_auto_delete:
+      state: off
 
 - name: Loop over qtrees
   ansible.builtin.include_tasks:
