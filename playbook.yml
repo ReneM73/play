@@ -32,6 +32,7 @@
   vars:
     source_server: server308
     destination_server: server309
+    clean_only: false
   tasks:
     - name: Cloning task. Clone from latest snapshot and mount all LUNs in it
       ansible.builtin.include_role:
@@ -60,6 +61,7 @@
   vars:
     source_server: server308
     destination_server: server309
+    clean_only: false
   tasks:
     - name: Cleanup task. Unmap Luns and delete {{ volume_sap_clone[0].destination_name }}
       ansible.builtin.include_role:
