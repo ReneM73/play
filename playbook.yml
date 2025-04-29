@@ -16,9 +16,6 @@
   gather_facts: false
   vars:
     # For testing only
-    ontap_validate_certs: false
-    netapp_username: admin
-    netapp_password: Netapp1!
     clean_only: false
     delete_volume_clone_05: false
     delete_volume_clone_06: false
@@ -38,9 +35,6 @@
   gather_facts: false
   vars:
     # For testing only
-    ontap_validate_certs: false
-    netapp_username: admin
-    netapp_password: Netapp1!
     clean_only: false
     delete_volume_clone_05: false
     delete_volume_clone_06: false
@@ -73,9 +67,6 @@
   gather_facts: false
   vars:
     # For testing only
-    ontap_validate_certs: false
-    netapp_username: admin
-    netapp_password: Netapp1!
     clean_only: false
     delete_volume_clone_05: true
     delete_volume_clone_06: false
