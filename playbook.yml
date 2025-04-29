@@ -14,6 +14,9 @@
   hosts: "{{ hosts_group | default('sap') }}"
   serial: 1
   gather_facts: false
+  vars:
+    source_server: server308
+    destination_server: server309
   tasks:
     - name: Cleanup task. Unmap Luns, delete or rename volume _06
       ansible.builtin.include_role:
