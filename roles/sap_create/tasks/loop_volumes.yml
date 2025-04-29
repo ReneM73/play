@@ -3,9 +3,9 @@
     name: sgs.ontap.volume
   vars:
     state: present
-    vserver_name: "{{ vserver_sap_fc }}"
+    vserver: "{{ vserver_sap_fc }}"
     aggregate_name: "{{ best_aggregate }}"
-    volume_name: "{{ volume.name }}"
+    name: "{{ volume.name }}"
     size: "{{ volume.size }}"
     snapshot_policy: none
     atime_update: false
