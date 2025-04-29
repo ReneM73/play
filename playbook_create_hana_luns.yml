@@ -12,14 +12,10 @@
       with_items: "{{ groups['sap'] }}"
       when: location is defined
 
-    - name: Persist sap_hosts_group for subsequent plays
-      hosts: localhost
-      gather_facts: false
-      tasks:
-        - name: Save sap_hosts_group as a global variable
-          ansible.builtin.set_fact:
-            sap_hosts_group: "{{ group }}"
-          cacheable: true
+    - name: Save sap_hosts_group as a global variable
+      ansible.builtin.set_fact:
+        sap_hosts_group: "{{ group }}"
+      cacheable: true
 
 - name: Create SAP HANA Volumes, Qtrees, and LUNs
   hosts: "{{ sap_hosts_group }}"
