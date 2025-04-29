@@ -32,7 +32,7 @@
     vserver: "{{ vserver_sap_fc }}"
     state: absent
     name: "{{ volume_name }}"
-  when: delete_volume_clone_05 or delete_volume_clone_06
+  when: (delete_volume_clone_05) or (delete_volume_clone_06)
 
 - name: Set new volume name with tobedeleted and date
   set_fact:
