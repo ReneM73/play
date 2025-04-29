@@ -1,0 +1,7 @@
+---
+cluster_name: 192.168.0.101
+city: Biel
+city_code: bi
+backup_cluster_name: gdcntap03
+vserver_sap_fc: gdcsvm101
+vserver_sap_nfs: gdcsvm301

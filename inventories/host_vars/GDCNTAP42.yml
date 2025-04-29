@@ -1,0 +1,9 @@
+---
+cluster_name: gdcntap42
+city: Grenchen
+city_code: gr
+vserver_gr_smb: gdcsvm242
+vserver_gr_nfs: gdcsvm342
+vserver_gr_mix: gdcsvm442
+vserver_gr_caas: gdcsvm842
+vserver_gr_dmz: gdcsvm942

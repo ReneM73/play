@@ -1,0 +1,6 @@
+---
+cluster_name: gdcntap03
+city: Lengnau
+city_code: le
+vserver_san_fc: gdcsvm103
+vserver_san_nfs: gdcsvm103

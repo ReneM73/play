@@ -15,6 +15,13 @@
   serial: 1
   gather_facts: false
   vars:
+    # For testing only
+    ontap_validate_certs: false
+    netapp_username: admin
+    netapp_password: Netapp1!
+    clean_only: false
+    delete_volume_clone_05: false
+    delete_volume_clone_06: false
     source_server: server308
     destination_server: server309
   tasks:
@@ -30,9 +37,15 @@
   serial: 1
   gather_facts: false
   vars:
+    # For testing only
+    ontap_validate_certs: false
+    netapp_username: admin
+    netapp_password: Netapp1!
+    clean_only: false
+    delete_volume_clone_05: false
+    delete_volume_clone_06: false
     source_server: server308
     destination_server: server309
-    clean_only: false
   tasks:
     - name: Cloning task. Clone from latest snapshot and mount all LUNs in it
       ansible.builtin.include_role:
@@ -59,9 +72,15 @@
   serial: 1
   gather_facts: false
   vars:
+    # For testing only
+    ontap_validate_certs: false
+    netapp_username: admin
+    netapp_password: Netapp1!
+    clean_only: false
+    delete_volume_clone_05: true
+    delete_volume_clone_06: false
     source_server: server308
     destination_server: server309
-    clean_only: false
   tasks:
     - name: Cleanup task. Unmap Luns and delete {{ volume_sap_clone[0].destination_name }}
       ansible.builtin.include_role:
@@ -72,15 +91,15 @@
         delete_volume_05: true
       when: not clean_only
 
-- name: Send mail notification
-  hosts: localhost
-  gather_facts: false
-  tasks:
-    - name: Send e-mail notification
-      ansible.builtin.mail:
-        host: "{{ mail.host }}"
-        from: "{{ mail.from }}"
-        to: "{{ mail.to }}"
-        subject: "SAP Cloning"
-        body: "SAP system {{ destination_server }} just became a clone.\nPlease verify its backup"
-      when: not clean_only
+# - name: Send mail notification
+#   hosts: localhost
+#   gather_facts: false
+#   tasks:
+#     - name: Send e-mail notification
+#       ansible.builtin.mail:
+#         host: "{{ mail.host }}"
+#         from: "{{ mail.from }}"
+#         to: "{{ mail.to }}"
+#         subject: "SAP Cloning"
+#         body: "SAP system {{ destination_server }} just became a clone.\nPlease verify its backup"
+#       when: not clean_only

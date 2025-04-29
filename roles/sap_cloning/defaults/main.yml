@@ -1,9 +1,3 @@
 ---
-delete_volume_05: false
-delete_volume_06: false
-# For testing only
-ontap_validate_certs: false
-netapp_username: admin
-netapp_password: Netapp1!
-aix_host: server308
-
+delete_volume_clone_05: false
+delete_volume_clone_06: false
