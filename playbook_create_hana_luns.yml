@@ -5,20 +5,15 @@
   tasks:
     - name: Set sap_hosts_group variable dynamically based on location
       ansible.builtin.set_fact:
-        group: >-
+        sap_hosts_group: >-
           {{ 'sap' if location == 'both' else
              hostvars[item].cluster_name if location == hostvars[item].city
              else 'sap' }}
       with_items: "{{ groups['sap'] }}"
       when: location is defined
 
-    - name: Save sap_hosts_group as a global variable
-      ansible.builtin.set_fact:
-        sap_hosts_group: "{{ group }}"
-      cacheable: true
-
 - name: Create SAP HANA Volumes, Qtrees, and LUNs
-  hosts: "{{ sap_hosts_group }}"
+  hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
   serial: 1
   gather_facts: false
   tasks:
