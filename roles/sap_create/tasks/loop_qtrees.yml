@@ -14,4 +14,4 @@
   loop: "{{ qtree.luns }}"
   loop_control:
     loop_var: lun
-    label: lun.name
+    label: " Create lun {{ lun.name }}"
