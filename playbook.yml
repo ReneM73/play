@@ -58,7 +58,7 @@
         tasks_from: cleanup.yml
       vars:
         volume_name: "{{ volume_sap_clone[0].destination_name }}"
-        delete_volume_05: true
+        delete_volume_clone_05: true
       when: not clean_only
 
 # - name: Send mail notification
