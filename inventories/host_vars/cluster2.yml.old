@@ -1,7 +1,0 @@
----
-cluster_name: 192.168.0.102
-city: Grenchen
-city_code: gr
-backup_cluster_name: gdcntap03
-vserver_sap_fc: gdcsvm102
-vserver_sap_nfs: gdcsvm302
