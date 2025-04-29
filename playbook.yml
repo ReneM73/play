@@ -61,7 +61,7 @@
 #       failed_when: "'WFA STATUS MESSAGE : SCRIPT 2_refresh_complete.ksh COMPLETED SUCCESSFULLY' not in myout.stdout_lines"
 #       when: execute_refresh_complete_aix_command and sap_hosts_group == "sap"
 
-- name: Delete clone volume {{ volume_sap_clone[0].destination_name }}
+- name: Delete clone volume _05
   hosts: "{{ hosts_group | default('sap') }}"
   serial: 1
   gather_facts: false

@@ -47,4 +47,4 @@
     vserver: "{{ vserver_sap_fc }}"
     name: "{{ new_volume_name }}"
     from_name: "{{ initial_volume_name }}"
-  when: not delete_volume_clone_06 and lun_info.ontap_info.storage_luns.num_records > 0
+  when: not delete_volume_clone_06 and lun_info.ontap_info.storage_luns.num_records > 0 or rename_volume_clone_05
