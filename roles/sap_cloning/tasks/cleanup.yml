@@ -55,5 +55,6 @@
     name: "{{ new_volume_name }}"
     from_name: "{{ initial_volume_name }}"
   when:
-    - not delete_volume_clone_06 and lun_info.ontap_info.storage_luns.num_records > 0
+    - not delete_volume_clone_06
+    - lun_info.ontap_info.storage_luns.num_records > 0
     - rename_volume_clone_05
