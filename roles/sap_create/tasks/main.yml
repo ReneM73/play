@@ -1,0 +1,13 @@
+---
+- name: Get best aggregate on cluster {{ cluster_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.aggregate
+    tasks_from: get_best_aggregate.yml
+
+- name: Loop over volumes
+  ansible.builtin.include_tasks:
+    file: loop_volumes.yml
+  loop: "{{ type.volumes }}"
+  loop_control:
+    loop_var: volume
+    label: " Create volume {{ volume.name }}"

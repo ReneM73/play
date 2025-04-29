@@ -1,0 +1,16 @@
+---
+- name: Create qtree {{ qtree.name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.qtree
+  vars:
+    state: present
+    vserver: "{{ vserver_sap_fc }}"
+    flexvol_name: "{{ volume.name }}"
+    name: "{{ qtree.name }}"
+
+- name: Loop over LUNs
+  ansible.builtin.include_tasks:
+    file: loop_luns.yml
+  loop: "{{ qtree.luns }}"
+  loop_control:
+    loop_var: lun
