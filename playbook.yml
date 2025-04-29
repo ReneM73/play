@@ -10,15 +10,39 @@
 #      failed_when: "'WFA STATUS MESSAGE : SCRIPT 1_refresh_prepare.ksh COMPLETED SUCCESSFULLY' not in myout.stdout_lines"
 #      when: execute_refresh_prepare_aix_command and sap_hosts_group == "sap"
 
-- name: Execute SAP Cloning Role
+- name: Rename or delete cloning volumes
   hosts: "{{ hosts_group | default('sap') }}"
   gather_facts: false
   tasks:
-    - name: Include role sap_cloning
+#    - name: Cleanup task. Unmap Luns and delete {{ volume_sap_clone[0].destination_name }}
+#      ansible.builtin.include_role:
+#        name: sap_cloning
+#        tasks_from: cleanup.yml
+#      vars:
+#        volume_name: "{{ volume_sap_clone[0].destination_name }}"
+#        delete_volume_05: true
+#      when: not clean_only
+
+    - name: Cleanup task. Unmap Luns, delete or rename volume {{ volume_sap_clone[1].destination_name }}
       ansible.builtin.include_role:
         name: sap_cloning
+        tasks_from: cleanup.yml
       vars:
-        delete_clone_volume_05: false
+        volume_name: "{{ volume_sap_clone[1].destination_name }}"
+
+- name: Clone volumes from latest snapshot and mount all LUNs in it for both volumes
+  hosts: "{{ hosts_group | default('sap') }}"
+  gather_facts: false
+  tasks:
+    - name: Cloning task. Clone from latest snapshot and mount all LUNs in it
+      ansible.builtin.include_role:
+        name: sap_cloning
+        tasks_from: clone_and_mount.yml
+      loop: "{{ volume_sap_clone }}"
+      loop_control:
+        label: "Clone volume {{ volume.source_name }}"
+        loop_var: volume
+      when: not clean_only
 
 # - name: Execute a script on the AIX jump host
 #   hosts: aix_jumphost
@@ -30,19 +54,17 @@
 #       failed_when: "'WFA STATUS MESSAGE : SCRIPT 2_refresh_complete.ksh COMPLETED SUCCESSFULLY' not in myout.stdout_lines"
 #       when: execute_refresh_complete_aix_command and sap_hosts_group == "sap"
 
-- name: Delete clone volume sap_volume[0].destination_name
-  hosts: "{{ sap_hosts_group }}"
+- name: Delete clone volume {{ volume_sap_clone[0].destination_name }}
+  hosts: "{{ hosts_group | default('sap') }}"
   gather_facts: false
   tasks:
-    - name: Delete volume {{ sap_volume[0].destination_name }}
+    - name: Cleanup task. Unmap Luns and delete {{ volume_sap_clone[0].destination_name }}
       ansible.builtin.include_role:
         name: sap_cloning
         tasks_from: cleanup.yml
       vars:
-        vserver: "{{ vserver_sap_fc }}"
-        volume_name: "{{ sap_volume[0].destination_name }}"
-        state: absent
-        delete_clone_volume_05: true
+        volume_name: "{{ volume_sap_clone[0].destination_name }}"
+        delete_volume_05: true
       when: not clean_only
 
 - name: Send mail notification
