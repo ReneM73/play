@@ -15,9 +15,9 @@
   serial: 1
   gather_facts: false
   vars:
-    # For testing only
-    clean_only: false
     delete_volume_clone_05: false
+    # For testing only
+    clean_only: true
     delete_volume_clone_06: false
     source_server: server308
     destination_server: server309
@@ -34,9 +34,9 @@
   serial: 1
   gather_facts: false
   vars:
+
     # For testing only
     clean_only: false
-    delete_volume_clone_05: false
     delete_volume_clone_06: false
     source_server: server308
     destination_server: server309
