@@ -40,6 +40,13 @@
     initial_volume_name: "{{ volume_name }}"
   when: not delete_volume_clone_06 and lun_info.ontap_info.storage_luns.num_records > 0
 
+- name: Debugging delete_volume_clone_06 and num_records
+  debug:
+    msg:
+      - "delete_volume_clone_06: {{ delete_volume_clone_06 }}"
+      - "num_records: {{ lun_info.ontap_info.storage_luns.num_records }}"
+      - "rename_volume_clone_05: {{ rename_volume_clone_05 }}"
+
 - name: Rename volume {{ volume_name }}
   ansible.builtin.include_role:
     name: sgs.ontap.volume
@@ -47,4 +54,6 @@
     vserver: "{{ vserver_sap_fc }}"
     name: "{{ new_volume_name }}"
     from_name: "{{ initial_volume_name }}"
-  when: (not delete_volume_clone_06 and lun_info.ontap_info.storage_luns.num_records > 0) or rename_volume_clone_05
+  when:
+    - not delete_volume_clone_06 and lun_info.ontap_info.storage_luns.num_records > 0
+    - rename_volume_clone_05
