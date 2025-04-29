@@ -1,16 +1,5 @@
 # Variables specified in this file will only be applied to host that belong to group 'all'
 ---
-# For Testing in LAB only
-ontap_validate_certs: false
-netapp_username: admin
-netapp_password: Netapp1!
-aix_host: server308
-type: "{{ sap_hana }}"
-os_type: linux
-sid: x90
-hanalog_size: 1
-hanadata_size: 3
-# Productive
 validate_certs: false
 sap_hosts_group: "sap"
 mail:
