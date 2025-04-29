@@ -19,7 +19,7 @@
   tasks:
     - name: Include role create_luns
       ansible.builtin.include_role:
-        name: create_luns
+        name: sap_create
       loop: "{{ sap_environment[sap_env] | list }}"
       loop_control:
         loop_var: type
