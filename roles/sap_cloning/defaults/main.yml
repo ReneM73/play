@@ -6,3 +6,5 @@ ontap_validate_certs: false
 netapp_username: admin
 netapp_password: Netapp1!
 aix_host: server308
+source_server: server308
+destination_server: server309
