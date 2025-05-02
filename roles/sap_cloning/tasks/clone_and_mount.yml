@@ -45,8 +45,8 @@
     path: "{{ lun.name }}"
     initiator_group_name: "fcp_{{ destination_server }}_01"
     lun_id: >
-      "{{ lun.name[-6:-4] | int + 1 if lun.name[-6:-4] | int == 50 
-      else lun.name[-6:-4] | int }}"
+      "{{ (lun_name[-6:-4] | int + 1 if lun_name[-6:-4] | int == 50 
+      else lun_name[-6:-4] | int) | string }}"
   loop: "{{ lun_info.ontap_info.storage_luns.records }}"
   loop_control:
     label: "Mount LUN: {{ lun.location.logical_unit }}"
