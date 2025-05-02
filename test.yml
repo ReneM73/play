@@ -1,0 +1,18 @@
+---
+- name: Rename or delete cloning volume no 06
+  hosts: "{{ sap_hosts_group | default('sap') }}"
+  serial: 1
+  gather_facts: false
+  vars:
+    delete_volume_clone_05: false
+    skip_rename: false
+    lun_name: server308_bha_db2data_50.lun
+  tasks:
+
+    name: Show lun id
+    ansible.builtin.debug:
+      msg: >
+        "{{ lun_name[-6:-4] | int + 1 if lun_name[-6:-4] | int == 50 
+        else lun_name[-6:-4] | int }}"
+      
+
