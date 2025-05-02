@@ -8,10 +8,9 @@
     skip_rename: false
     lun_name: server308_bha_db2data_50.lun
   tasks:
-
-    name: Show lun id
+    - name: Show lun id
       ansible.builtin.debug:
-       msg: >
+        msg: >
           "{{ lun_name[-6:-4] | int + 1 if lun_name[-6:-4] | int == 50 
           else lun_name[-6:-4] | int }}"
       
