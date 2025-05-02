@@ -10,9 +10,9 @@
   tasks:
 
     name: Show lun id
-    ansible.builtin.debug:
-      msg: >
-        "{{ lun_name[-6:-4] | int + 1 if lun_name[-6:-4] | int == 50 
-        else lun_name[-6:-4] | int }}"
+      ansible.builtin.debug:
+       msg: >
+          "{{ lun_name[-6:-4] | int + 1 if lun_name[-6:-4] | int == 50 
+          else lun_name[-6:-4] | int }}"
       
 
