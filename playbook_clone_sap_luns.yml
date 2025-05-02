@@ -1,0 +1,30 @@
+---
+- name: Rename or delete cloning volume no 06
+  hosts: "{{ sap_hosts_group | default('sap') }}"
+  serial: 1
+  gather_facts: false
+  vars:
+    delete_volume_clone_05: false
+    skip_rename: false
+  tasks:
+    - name: Cleanup task. Unmap Luns, delete or rename volume _06
+      ansible.builtin.include_role:
+        name: sap_cloning
+        tasks_from: cleanup.yml
+      vars:
+        volume_name: "{{ volume_sap_clone[1].destination_name }}"
+
+- name: Clone volumes from latest snapshot and mount all LUNs in it for both volumes
+  hosts: "{{ sap_hosts_group | default('sap') }}"
+  serial: 1
+  gather_facts: false
+  tasks:
+    - name: Cloning task. Clone from latest snapshot and mount all LUNs in it
+      ansible.builtin.include_role:
+        name: sap_cloning
+        tasks_from: clone_and_mount.yml
+      loop: "{{ volume_sap_clone }}"
+      loop_control:
+        label: "Clone volume {{ volume.source_name }}"
+        loop_var: volume
+      when: not clean_only

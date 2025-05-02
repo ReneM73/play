@@ -10,6 +10,7 @@
     name: "{{ lun.name }}"
     size: "{{ lun.size_gb }}"
     size_unit: gb
+    os_type: "{{ lun.os_type }}"
     space_allocation: false
     space_reserve: false
 
