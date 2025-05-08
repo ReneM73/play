@@ -13,7 +13,7 @@
       when: location is defined
 
 - name: Create SAP OS Volumes, Qtrees, and LUNs
-  hosts: "{{ sap_hosts_group }}"
+  hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
   serial: 1
   gather_facts: false
   tasks:
