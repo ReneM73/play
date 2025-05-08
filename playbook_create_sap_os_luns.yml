@@ -19,6 +19,6 @@
   tasks:
     - name: Include role create_luns
       ansible.builtin.include_role:
-        name: create_luns
+        name: sap_create
       vars:
         os_type: "{{ os_type }}"
