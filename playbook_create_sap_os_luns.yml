@@ -21,4 +21,5 @@
       ansible.builtin.include_role:
         name: sap_create
       vars:
+        type: "{{ sap_os }}"
         os_type: "{{ os_type }}"
