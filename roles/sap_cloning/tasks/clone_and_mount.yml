@@ -44,7 +44,7 @@
     vserver: "{{ vserver_sap_fc }}"
     path: "{{ lun.name }}"
     initiator_group_name: "fcp_{{ destination_server }}_01"
-    lun_id: "{{ 51 if lun.name[-6:-4] | int == 50 else lun.name[-6:-4] | int) }}"
+    lun_id: "{{ 51 if lun.name[-6:-4] | int == 50 else lun.name[-6:-4] | int }}"
   loop: "{{ lun_info.ontap_info.storage_luns.records }}"
   loop_control:
     label: "Mount LUN: {{ lun.location.logical_unit }}"
