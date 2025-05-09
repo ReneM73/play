@@ -22,4 +22,3 @@
   loop_control:
     loop_var: qtree
     label: "Create qtree {{ qtree.name}}"
-  when: swapvg_size is not defined or swapvg_size != 0
