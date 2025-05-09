@@ -17,13 +17,13 @@
   serial: 1
   gather_facts: false
   tasks:
-  #  - name: Execute a script on the AIX jump host
-  #    ansible.builtin.raw: "{{ get_wwn_cmd }}"
-  #    register: initiators
-#
-  #  - name: Show initiators (must be a comma separeted list)
-  #    ansible.builtin.debug:
-  #      msg: "{{ initiators.stdout_lines | join(',') }}"
+    - name: Execute a script on the AIX jump host
+      ansible.builtin.raw: "{{ get_wwn_cmd }}"
+      register: initiators
+
+    - name: Show initiators (must be a comma separeted list)
+      ansible.builtin.debug:
+        msg: "{{ initiators.stdout_lines | join(',') }}"
 
     - name: Include role igroup
       ansible.builtin.include_role:
@@ -32,7 +32,7 @@
         state: present
         vserver: "{{ vserver_sap_fc }}"
         name: "fcp_{{ aix_host }}_01"
-        initiator_group_type: fcp
+        initiator_group_type: iscsi
         initiator_names: "{{ initiators }}"
         os_type: "{{ os_type }}"
 
