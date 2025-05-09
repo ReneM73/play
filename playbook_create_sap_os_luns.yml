@@ -12,19 +12,30 @@
       with_items: "{{ groups['sap'] }}"
       when: location is defined
 
+- name: Execute a script on the AIX jump host
+  hosts: aix_jumphost
+  gather_facts: false
+  tasks:
+    - name: Execute the get WWN command
+      ansible.builtin.raw: "{{ get_wwn_cmd }}"
+      register: wwns
+      when: initiators not defined
+
+    - name: Show initiators (must be a comma separeted list)
+      ansible.builtin.debug:
+        msg: "{{ wwns.stdout_lines | join(',') }}"
+      when: initiators not defined
+
+    - name: Set initiators variable
+      ansible.builtin.set_fact:
+        stored_wwns: "{{ initiators }}"
+      delegate_to: localhost
+
 - name: Create Initiator Groups for SAP OS LUNs
   hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
   serial: 1
   gather_facts: false
   tasks:
-#    - name: Execute a script on the AIX jump host
-#      ansible.builtin.raw: "{{ get_wwn_cmd }}"
-#      register: initiators
-#
-#    - name: Show initiators (must be a comma separeted list)
-#      ansible.builtin.debug:
-#        msg: "{{ initiators.stdout_lines | join(',') }}"
-
     - name: Include role igroup
       ansible.builtin.include_role:
         name: sgs.ontap.igroup
@@ -32,8 +43,8 @@
         state: present
         vserver: "{{ vserver_sap_fc }}"
         name: "fcp_{{ aix_host }}_01"
-        initiator_group_type: iscsi
-        initiator_names: "{{ initiators }}"
+        initiator_group_type: fcp
+        initiator_names: "{{ hostvars['localhost']['stored_wwns'] }}"
         os_type: "{{ os_type }}"
 
 - name: Create SAP OS Volumes, Qtrees, and LUNs
