@@ -1,12 +1,16 @@
 ---
+- name: Show
+  ansible.builtin.debug:
+    msg: "{{ volume}}"
+
 - name: Resize volume {{ volume_name }}
   ansible.builtin.include_role:
     name: sgs.ontap.volume
   vars:
     state: present
     vserver: "{{ vserver_sap_fc }}"
-    name: "{{ volume_name }}"
-    size: "{{ volume_size_gb }}"
+    name: "{{ volume.name }}"
+    size: "{{ volume.size_gb }}"
 
 - name: Loop over LUNs
   ansible.builtin.include_tasks:
