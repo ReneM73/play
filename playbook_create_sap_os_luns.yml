@@ -27,7 +27,7 @@
 
     - name: Include role igroup
       ansible.builtin.include_role:
-        name: ontap.igroup
+        name: sgs.ontap.igroup
       vars:
         state: present
         vserver: "{{ vserver_sap_fc }}"
