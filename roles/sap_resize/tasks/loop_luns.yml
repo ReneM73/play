@@ -5,7 +5,7 @@
   vars:
     state: present
     vserver: "{{ vserver_sap_fc }}"
-    flexvol_name: "{{ volume.name }}"
+    flexvol_name: "{{ volume_dict.name }}"
     name: "{{ lun.name }}"
     size: "{{ lun.size_gb }}"
     size_unit: gb
