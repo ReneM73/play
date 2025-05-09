@@ -43,7 +43,7 @@
         state: present
         vserver: "{{ vserver_sap_fc }}"
         name: "fcp_{{ aix_host }}_01"
-        initiator_group_type: fcp
+        initiator_group_type: iscsi
         initiator_names: "{{ hostvars['localhost']['stored_wwns'] }}"
         os_type: "{{ os_type }}"
 
