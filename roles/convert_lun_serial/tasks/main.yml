@@ -13,8 +13,8 @@
 
 - name: Convert serial numbers to Linux IDs
   ansible.builtin.set_fact:
-  lun_linux_id: "{{ lun_linux_id | default({}) | combine({item.name: '3600a0980' + item.serial_number | regex_replace(' ', '')}) }}"
-  loop: "{{ lun_info.ontap_info.storage_luns.records }}"
+    lun_linux_id: "{{ lun_linux_id | default({}) | combine({item.name: '3600a0980' + item.serial_number | regex_replace(' ', '')}) }}"
+    loop: "{{ lun_info.ontap_info.storage_luns.records }}"
   loop_control:
     label: "{{ item.name }}"
 
