@@ -1,3 +1,7 @@
+- name: Show volumes
+  ansible.builtin.debug:
+    msg: "{{ volume}}"
+
 - name: Create volume {{ volume.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.volume
