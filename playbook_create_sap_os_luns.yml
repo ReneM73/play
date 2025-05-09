@@ -17,13 +17,13 @@
   serial: 1
   gather_facts: false
   tasks:
-    - name: Execute a script on the AIX jump host
-      ansible.builtin.raw: "{{ get_wwn_cmd }}"
-      register: initiators
-
-    - name: Show initiators (must be a comma separeted list)
-      ansible.builtin.debug:
-        msg: "{{ initiators.stdout_lines | join(',') }}"
+#    - name: Execute a script on the AIX jump host
+#      ansible.builtin.raw: "{{ get_wwn_cmd }}"
+#      register: initiators
+#
+#    - name: Show initiators (must be a comma separeted list)
+#      ansible.builtin.debug:
+#        msg: "{{ initiators.stdout_lines | join(',') }}"
 
     - name: Include role igroup
       ansible.builtin.include_role:
