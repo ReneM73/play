@@ -1,72 +1,63 @@
-#################################################################
+# Execute SAP Resize Role
 
-volume_size_gb
-qtree_name
-lun_name
-lun_size_gb
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-###################################################################
-# Execute SAP Clone Role
-
-This Ansible role is designed to manage SAP volume cleanup and cloning tasks.
-
-The `execute_sap_cloning` role is designed to automate the volume cleanup and cloning in a NetApp ONTAP environment. This role is part of the `netapp-ansible-sap-refresh` playbook and handles the core logic for identifying cleanup and clone SAP volumes.
+This Ansible role is designed to resize SAP volume and the LUNs contained within them.
 
 ## Role Workflow
 
 ### main.yml
 
-- **Execute Task `cleanup.yml`**
-- **Execute Task `clone_and_mount.yml` if `clean_only is false`**
+- **Execute Task: Resize volume**
+- **Execute Task `loop_luns.yml`**
 
-### cleanup.yml
-  1. **Get all LUNs from volume**:
-    - Execute `sgs.ontap.rest_info` role to get all LUNs from volume `06_clone`
-
-  2. **Unmap all LUNs from volumes**:
-    - Execute `sgs.ontap.lun` role with task from `map.yml` to unmap all LUNs from volume `06_clone`
-
-  3. **Delete volume if `delete_volume is true`**:
-    - Execute `sgs.ontap.volume` role to delete the volume `06_clone`
-
-  4. **Rename volume if `delete_volume is false`**:
-    - Execute `sgs.ontap.volume` role to rename the volume `06_clone` to `06_clone_tobedeleted_"DateToDay + 30 days"
-
-### clone_and_mount.yml
-  1. **Get all snapshot starting with `SP_` from volume**
-    - Execute `sgs.ontap.rest_info` role to get all snapshots from the volume
-  2. **Clone volume**
-    - Execute `sgs.ontap.volume` role with task from `clone.yml` to clone the volume from the latest snapshot
-  3.  **Get all LUNs from volume**:
-    - Execute `sgs.ontap.rest_info` role to get all LUNs from volume
-  4. **Mount all LUNs in volume**
-    - Execute `sgs.ontap.lun` role with task from `map.yml` to mount the volumes
-
+### loop_luns.yml
+  1. **Resize LUN**:
+    - Execute `sgs.ontap.lun` role to resize the LUN
 
 ## Requirements
 
-- NetApp ONTAP API credentials with sufficient permissions to manage volumes, LUNs, and initiator groups.
+- NetApp ONTAP API credentials with sufficient permissions to manage volumes, and LUNs.
 - Ansible collection `sgs.ontap` installed.
 
 ## Role Variables
 
 The following variables are used by the role:
 
-| Variable              | Type    | Description                                                   |
-|-----------------------|---------|---------------------------------------------------------------|
-| `volume_sap_clone`    | dict    | SAP volumes from this playbook `inventories/all.yml           |
-| `vserver_sap`         | string  | SAP vserver name from project inventory `inventores/sap.yml   |
+| Variable                    | Type    | Description                                  |
+|-----------------------------|---------|----------------------------------------------|
+| `volume`       	            | dict	  | Main object for SAP volume resizing.         |
+| `volume.name`               | string	| Name of the volume to be adjusted.           |
+| `volume.size_gb`            | integer	| Total size of the volume in GB.              |
+| `volume.luns`               | list	  | List of LUNs contained within the volume.    |
+| `volume.luns[].name`        | string	| Name of the individual LUN.                  |
+| `volume.luns[].size_gb`     | integer	| Size of the LUN in GB.                       |
+| `volume.luns[].mountpoint`  | string	| Mount point of the LUN in the file system.   |
+
+
+
+#################################################################
+aix_host
+volume_size_gb
+lun_name
+lun_size_gb
+mountpoint
+
+
+
+
+yml format
+aix_host: "server310"
+volume:
+  name: "gdc_fcp_sap_server310_01"
+  size_gb: 64
+  luns:
+    - name: "server310_rootvg_10.lun"
+      mountpoint: "/var/gib"
+      size_gb: 41
+    - name: "server310_rootvg_11.lun"
+      mountpoint: "/usr/sap"
+      size_gb: 22
+
+
+
+string format
+'aix_host=server310 volume={"name":"gdc_fcp_sap_server310_01","size_gb":64,"luns":[{"name":"server310_rootvg_10.lun","size_gb":41,mountpoint":"/var/gib"},{"name":"server310_rootvg_11.lun",mountpoint":"/var/gib","size_gb":22}]}'

@@ -1,0 +1,23 @@
+---
+- name: Get all LUNs in volume {{ volume.destination_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: info.yml
+  vars:
+    gather_subset: storage/luns
+    fields: "*"
+    parameters:
+      svm.name: "{{ vserver_sap_fc }}"
+      location.logical: "*{{ lun_pattern }}*"
+    result_var: lun_info
+
+- name: Convert serial numbers to Linux IDs
+  ansible.builtin.set_fact:
+  lun_linux_id: "{{ lun_linux_id | default({}) | combine({item.name: '3600a0980' + item.serial_number | regex_replace(' ', '')}) }}"
+  loop: "{{ lun_info.ontap_info.storage_luns.records }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Show
+  ansible.builtin.debug:
+    msg: "{{ lun_linux_id }}"

@@ -4,6 +4,6 @@
   serial: 1
   gather_facts: false
   tasks:
-    - name: Include Role sap_resize
+    - name: Include Role convert_lun_serial
       ansible.builtin.include_role:
-        name: sap_resize
+        name: convert_lun_serial

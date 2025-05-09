@@ -1,5 +1,5 @@
 ---
-- name: Create lun {{ lun.name }}
+- name: Resize lun {{ lun.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.lun
   vars:
