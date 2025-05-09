@@ -7,3 +7,4 @@
     - name: Include Role convert_lun_serial
       ansible.builtin.include_role:
         name: convert_lun_serial
+
