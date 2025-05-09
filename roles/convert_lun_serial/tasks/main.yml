@@ -9,7 +9,7 @@
     parameters:
       svm.name: "{{ vserver_sap_fc }}"
       location.logical: "*{{ lun_pattern }}*"
-  result_var: lun_info
+      result_var: lun_info
 
 - name: Convert serial numbers to Linux IDs
   ansible.builtin.set_fact:
