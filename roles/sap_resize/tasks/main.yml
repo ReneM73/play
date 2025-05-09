@@ -3,6 +3,11 @@
   ansible.builtin.debug:
     msg: "{{ volume }}"
 
+- name: Show volume name
+  ansible.builtin.debug:
+    msg: "{{ volume.name }}"
+
+
 - name: Resize volume {{ volume.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.volume
