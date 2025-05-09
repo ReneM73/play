@@ -2,6 +2,9 @@
   debug:
     msg: "{{ volume}}"
 
+- name: show
+  debug:
+    msg: "{{ vserver_sap_fc}} - "
 
 - name: Create volume {{ volume.name }}
   ansible.builtin.include_role:
@@ -18,7 +21,7 @@
     percent_snapshot_space: 0
     volume_security_style: unix
     snapshot_auto_delete:
-      state: off
+      state: "off"
 
 - name: Loop over qtrees
   ansible.builtin.include_tasks:
@@ -26,5 +29,5 @@
   loop: "{{ volume.qtrees }}"
   loop_control:
     loop_var: qtree
-    label: " Create qtree {{ qtree.name}}"
+    label: "Create qtree {{ qtree.name}}"
   when: swapvg_size is not defined or swapvg_size != 0
