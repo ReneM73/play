@@ -18,10 +18,10 @@
     name: "{{ volume_dict.name }}"
     size: "{{ volume_dict.size_gb }}"
 
-# - name: Loop over LUNs
-#   ansible.builtin.include_tasks:
-#     file: loop_luns.yml
-#  loop: "{{ qtree.luns }}"
-#  loop_control:
-#    loop_var: lun
-#    label: " Create lun {{ lun.name }}"
+- name: Loop over LUNs
+  ansible.builtin.include_tasks:
+    file: loop_luns.yml
+  loop: "{{ volume_dict.luns }}"
+  loop_control:
+    loop_var: lun
+    label: " Resize lun {{ lun.name }}"
