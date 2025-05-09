@@ -18,6 +18,7 @@
     volume_security_style: unix
     snapshot_auto_delete:
       state: "off"
+  when: volume.size_gb | int > 0
 
 - name: Loop over qtrees
   ansible.builtin.include_tasks:
@@ -26,3 +27,4 @@
   loop_control:
     loop_var: qtree
     label: "Create qtree {{ qtree.name}}"
+  when: volume.size_gb | int > 0
