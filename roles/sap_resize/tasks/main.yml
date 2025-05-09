@@ -1,9 +1,9 @@
 ---
 - name: Show
   ansible.builtin.debug:
-    msg: "{{ volume}}"
+    msg: "{{ volume }}"
 
-- name: Resize volume {{ volume_name }}
+- name: Resize volume {{ volume.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.volume
   vars:
@@ -12,9 +12,9 @@
     name: "{{ volume.name }}"
     size: "{{ volume.size_gb }}"
 
-- name: Loop over LUNs
-  ansible.builtin.include_tasks:
-    file: loop_luns.yml
+# - name: Loop over LUNs
+#   ansible.builtin.include_tasks:
+#     file: loop_luns.yml
 #  loop: "{{ qtree.luns }}"
 #  loop_control:
 #    loop_var: lun
