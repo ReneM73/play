@@ -9,11 +9,12 @@
 
 - name: Convert volume to dictionary
   ansible.builtin.set_fact:
-    volume_dict: "{{ volume | from_json }}"
+    volume: "{{ volume | from_json }}"
+  when: volume | type_debug == "str"
 
 - name: Show volume name
   ansible.builtin.debug:
-    msg: "{{ volume_dict.name }}"
+    msg: "{{ volume.name }}"
 
 - name: Resize volume {{ volume.name }}
   ansible.builtin.include_role:
