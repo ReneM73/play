@@ -1,0 +1,11 @@
+---
+- name: Create lun {{ lun_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.lun
+  vars:
+    state: present
+    vserver: "{{ vserver_sap_fc }}"
+    flexvol_name: "{{ volume_name }}"
+    name: "{{ lun_name }}"
+    size: "{{ lun_size_gb }}"
+    size_unit: gb

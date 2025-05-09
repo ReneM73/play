@@ -1,0 +1,9 @@
+---
+- name: Resize SAP LUNs
+  hosts: "{{ sap_hosts_group | default('sap') }}"
+  serial: 1
+  gather_facts: false
+  tasks:
+    - name: Include Role sap_resize
+      ansible.builtin.include_role:
+        name: sap_resize
