@@ -47,4 +47,3 @@
       vars:
         type: "{{ sap_os }}"
         os_type: "{{ os_type }}"
-      when: swapvg_size is not defined or swapvg_size != 0 | int

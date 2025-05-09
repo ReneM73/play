@@ -11,3 +11,4 @@
   loop_control:
     loop_var: volume
     label: " Create volume {{ volume.name }}"
+  when: swapvg_size is not defined or (swapvg_size | int) > 0
