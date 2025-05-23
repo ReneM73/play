@@ -15,8 +15,8 @@
   ansible.builtin.set_fact:
     lun_linux_id: "{{ lun_linux_id | default({}) | combine({item.name: '3600a0980' + item.serial_number | list | map('ord') | map('int') | map('hex') | join('') }) }}"
   loop: "{{ lun_info.ontap_info.storage_luns.records }}"
-  loop_control:
-    label: "{{ item.location.logical_unit }}"
+#  loop_control:
+#    label: "{{ item.location.logical_unit }}"
 
 - name: Show
   ansible.builtin.debug:
