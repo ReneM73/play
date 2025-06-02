@@ -6,4 +6,4 @@
 - name: Schau me
   ansible.builtin.debug:
     msg: "{{ item }}"
-  loop: " {{ section }}"
+  loop: " {{ delete_sap_luns[sap_variant] }}"
