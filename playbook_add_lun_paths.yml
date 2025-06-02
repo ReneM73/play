@@ -16,6 +16,9 @@
   hosts: aix_jumphost
   gather_facts: false
   tasks:
+    - name: Show the initiators to be added
+      ansible.builtin.debug:
+        msg: "Adding initiators: {{ initiators }}"
 #    - name: Execute the get WWN command
 #      ansible.builtin.raw: "{{ get_wwn_cmd }}"
 #      register: wwns
