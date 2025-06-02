@@ -16,31 +16,32 @@
   hosts: aix_jumphost
   gather_facts: false
   tasks:
-    - name: Show the initiators to be added
+    - name: Execute the get WWN command
+      ansible.builtin.raw: "{{ get_wwn_cmd }}"
+      register: wwns
+      when: initiators is not defined
+
+    - name: Show initiators (must be a comma separeted list)
       ansible.builtin.debug:
-        msg: "Adding initiators: {{ initiators }}"
-#    - name: Execute the get WWN command
-#      ansible.builtin.raw: "{{ get_wwn_cmd }}"
-#      register: wwns
-#      when: initiators is not defined
-#
-#    - name: Show initiators (must be a comma separeted list)
-#      ansible.builtin.debug:
-#        msg: "{{ wwns.stdout_lines | join(',') }}"
-#      when: initiators is not defined
+        msg: "{{ wwns.stdout_lines | join(',') }}"
+      when: initiators is not defined
 
     - name: Set initiators variable
       ansible.builtin.set_fact:
         stored_wwns: "{{ initiators }}"
+      delegate_to: localhost
 
-- name: Add initiators to the igroup fcp_{{ aix_host }}_01
+- name: Create Initiator Groups for SAP OS LUNs
   hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
   serial: 1
   gather_facts: false
   tasks:
     - name: Show the initiators to be added
       ansible.builtin.debug:
-        msg: "Adding initiators: {{ hostvars[aix_jumphost]['stored_wwns'] }}"
+        msg: "{{ hostvars['localhost']['sap_hosts_group'] }}"
+    - name: Show the initiators to be added
+      ansible.builtin.debug:
+        msg: "Adding initiators: {{ hostvars['localhost']['stored_wwns'] }}"
 
     - name: Include role igroup initiator
       ansible.builtin.include_role:
@@ -50,4 +51,4 @@
         state: present
         vserver: "{{ vserver_sap_fc }}"
         initiator_group: "fcp_{{ aix_host }}_01"
-        names: "{{ hostvars[aix_jumphost]['stored_wwns'] }}"
+        names: "{{ hostvars['GDC00620']['stored_wwns'] }}"
