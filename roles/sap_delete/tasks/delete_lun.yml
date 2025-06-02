@@ -18,13 +18,13 @@
     tasks_from: map.yml
   vars:
     vserver: "{{ vserver_sap_fc }}"
-    path: "{{ lun.name }}"
+    path: "{{ unmap_lun.name }}"
     initiator_group_name: "fcp_{{ aix_host }}_01"
     state: absent
   loop: "{{ lun_info.ontap_info.storage_luns.records }}"
   loop_control:
     label: "{{ lun.location.logical_unit }}"
-    loop_var: lun
+    loop_var: unmap_lun
   when: lun_info.ontap_info.storage_luns.num_records > 0
 
 - name: Delete LUNs
@@ -32,11 +32,11 @@
     name: sgs.ontap.lun
   vars:
     vserver: "{{ vserver_sap_fc }}"
-    flexvol_name: "{{ lun.location.volume.name }}"
-    name: "{{ lun.location.logical_unit }}"
+    flexvol_name: "{{ delete_lun.location.volume.name }}"
+    name: "{{ delete_lun.location.logical_unit }}"
     state: absent
   loop: "{{ lun_info.ontap_info.storage_luns.records }}"
   loop_control:
     label: "{{ lun.location.logical_unit }}"
-    loop_var: lun
+    loop_var: delete_lun
   when: lun_info.ontap_info.storage_luns.num_records > 0
