@@ -1,4 +1,8 @@
 ---
+- name: Show
+  debug:
+    msg: "{{ lun }}"
+
 - name: Get LUNs from volume {{ volume }}
   ansible.builtin.include_role:
     name: sgs.ontap.rest
