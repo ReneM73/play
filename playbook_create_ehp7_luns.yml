@@ -24,11 +24,11 @@
         type: "{{ sap_ehp7 }}"
         switch: create
 
-- name: Execute a script on the AIX jump host
-  hosts: aix_jumphost
-  gather_facts: false
-  tasks:
-    - name: Execute the ehp7_create_cmd command
-      ansible.builtin.raw: "{{ ehp7_create_cmd }}"
-      register: myout
-      failed_when: "'SUCCESS' not in myout.stdout_lines"
+# - name: Execute a script on the AIX jump host
+#   hosts: aix_jumphost
+#   gather_facts: false
+#   tasks:
+#     - name: Execute the ehp7_create_cmd command
+#       ansible.builtin.raw: "{{ ehp7_create_cmd }}"
+#       register: myout
+#       failed_when: "'SUCCESS' not in myout.stdout_lines"
