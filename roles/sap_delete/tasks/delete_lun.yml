@@ -7,9 +7,9 @@
     gather_subset: storage/luns
     fields: '*'
     parameters:
-      - svm.name: "{{ vserver_sap_fc }}"
-      - location.volume.name: "{{ volume }}"
-      - location.logical_unit: "{{ lun }} | default(omit)"
+      svm.name: "{{ vserver_sap_fc }}"
+      location.volume.name: "{{ volume }}"
+      location.logical_unit: "{{ lun | default(omit) }}"
     result_var: lun_info
 
 - name: Unmap LUNs in volume {{ volume }}
