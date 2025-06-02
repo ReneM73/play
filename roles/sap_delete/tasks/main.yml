@@ -5,5 +5,5 @@
 
 - name: Schau me
   ansible.builtin.debug:
-    msg: "{{ delete_sap_luns[sap_variant] }}"
+    msg: "{{ delete_sap_luns[sap_variant] | list }}"
   #loop: "{{ delete_sap_luns[sap_variant] | list }}"
