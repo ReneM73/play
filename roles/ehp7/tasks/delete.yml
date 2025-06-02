@@ -18,7 +18,7 @@
   vars:
     vserver: "{{ vserver_sap_fc }}"
     path: "{{ item.name }}"
-    initiator_group_name: "fcp_{{ destination_server }}_01"
+    initiator_group_name: "fcp_{{ aix_host }}_01"
     state: absent
   loop: "{{ lun_info.ontap_info.storage_luns.records }}"
   loop_control:

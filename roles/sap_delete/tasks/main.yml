@@ -3,3 +3,12 @@
   ansible.builtin.include_tasks:
     file: delete.yml
   loop: "{{ delete_sap_luns[sap_variant] | list }}"
+
+- name: Delete igroup fcp_{{ aix_host }}_01
+  ansible.builtin.include_role:
+    name: sgs.ontap.igroup
+  vars:
+    vserver: "{{ vserver_sap_fc }}"
+    name: "fcp_{{ aix_host }}_01"
+    state: absent
+  when: sap_variant == 'all'
