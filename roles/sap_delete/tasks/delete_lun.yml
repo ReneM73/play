@@ -23,7 +23,7 @@
     state: absent
   loop: "{{ lun_info.ontap_info.storage_luns.records }}"
   loop_control:
-    label: "{{ lun.location.logical_unit }}"
+    label: "{{ unmap_lun.location.logical_unit }}"
     loop_var: unmap_lun
   when: lun_info.ontap_info.storage_luns.num_records > 0
 
@@ -37,6 +37,6 @@
     state: absent
   loop: "{{ lun_info.ontap_info.storage_luns.records }}"
   loop_control:
-    label: "{{ lun.location.logical_unit }}"
+    label: "{{ delete_lun.location.logical_unit }}"
     loop_var: delete_lun
   when: lun_info.ontap_info.storage_luns.num_records > 0
