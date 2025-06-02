@@ -5,4 +5,5 @@
 
 - name: Schau me
   ansible.builtin.debug:
-    msg: "{{ section }}"
+    msg: "{{ item }}"
+  loop: " {{ section }}"
