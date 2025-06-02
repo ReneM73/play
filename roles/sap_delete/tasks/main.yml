@@ -1,7 +1,7 @@
 ---
 - name: Get section from inventory
   ansible.builtin.set_fact:
-    section: "delete_sap_luns.{{ sap_variant }}"
+    section: "{{ delete_sap_luns }}.{{ sap_variant }}"
 
 - name: Schau me
   ansible.builtin.debug:
