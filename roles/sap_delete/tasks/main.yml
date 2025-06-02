@@ -1,54 +1,8 @@
 ---
-- name: Get all volumes on vserver that contain the AIX Host {{ aix_host }}
-  ansible.builtin.include_role:
-    name: sgs.ontap.rest
-    tasks_from: info.yml
-  vars:
-    gather_subset: storage/volumes
-    parameters:
-      svm.name: "{{ vserver_sap_fc }}"
-      name: "*{{ aix_host }}*"
-    result_var: volume_info
+- name: Get section from inventory
+  ansible.builtin.set_fact:
+    section: "delete_sap_luns.{{ sap_variant }}"
 
-- name: Delete all possible snapmirrors
-  ansible.builtin.include_tasks:
-    file: delete_snapmirror.yml
-  loop: "{{ volume_info.ontap_info.storage_volumes.records }}"
-  loop_control:
-    label: "Delete possible snapmirror for volume {{ volume.name }}"
-    loop_var: volume
-
-- name: Delete all volumes if delete_only_sap is false
-  ansible.builtin.include_role:
-    name: sgs.ontap.volume
-  vars:
-    state: absent
-    vserver: "{{ vserver_sap_fc }}"
-    name: "{{ item.name }}"
-    force_unmap_luns: true
-  loop: "{{ volume_info.ontap_info.storage_volumes.records }}"
-  loop_control:
-    label: "Delete volume {{ item.name }}"
-  when: not delete_only_sap
-
-- name: Delete igroup if delete_only_sap is false
-  ansible.builtin.include_role:
-    name: sgs.ontap.igroup
-  vars:
-    state: absent
-    vserver: "{{ vserver_sap_fc }}"
-    name: "fcp_{{ aix_host }}_01"
-  when: not delete_only_sap
-
-- name: Delete all volumes if delete_only_sap is true except _01 & _03 
-  ansible.builtin.include_role:
-    name: sgs.ontap.volume
-  vars:
-    state: absent
-    vserver: "{{ vserver_sap_fc }}"
-    name: "{{ item.name }}"
-    force_unmap_luns: true
-  loop: "{{ volume_info.ontap_info.storage_volumes.records }}"
-  loop_control:
-    label: "Delete volume {{ item.name }}"
-  when: delete_only_sap and not ('_01' in item.name or '_03' in item.name)
+- name: Schau me
+  ansible.builtin.debug:
+    msg: "{{ section }}"

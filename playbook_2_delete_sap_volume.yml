@@ -1,0 +1,36 @@
+---
+- name: Execute SAP Delete Role
+  hosts: "{{ sap_hosts_group }}"
+  gather_facts: false
+  tasks:
+    - name: Include role sap_delete
+      ansible.builtin.include_role:
+        name: sap_delete
+
+- name: Send mail notification
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Prepare formatted snapmirror list
+      ansible.builtin.set_fact:
+        formatted_snapmirrors: "{{ deleted_snapmirrors | default([]) | join('\n') }}"
+      when: deleted_snapmirrors is defined and deleted_snapmirrors | length > 0
+    
+    - name: Send e-mail notification
+      ansible.builtin.mail:
+        host: "{{ mail.host }}"
+        from: "{{ mail.from }}"
+        to: "{{ mail.to }}"
+        subject: "SAP Volume Deleted with Backup"
+        body: |
+          Dear Team,
+    
+          The following SnapMirror relationships have been deleted:
+        
+          {{ formatted_snapmirrors }}
+    
+          Please delete the corresponding backup volumes manually.
+    
+          Best regards,
+          AWX
+      when: deleted_snapmirrors is defined and deleted_snapmirrors | length > 0
