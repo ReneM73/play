@@ -30,15 +30,13 @@
       ansible.builtin.set_fact:
         stored_wwns: "{{ initiators }}"
         cacheable: yes
+      delegate_to: localhost
 
 - name: Create Initiator Groups for SAP OS LUNs
   hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
   serial: 1
   gather_facts: false
   tasks:
-    - name: Show the initiators to be added
-      ansible.builtin.debug:
-        msg: "{{ hostvars['localhost']['sap_hosts_group'] }}"
     - name: Show the initiators to be added
       ansible.builtin.debug:
         msg: "Adding initiators: {{ stored_wwns }}"
