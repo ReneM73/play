@@ -27,7 +27,7 @@
   vars:
     state: present
     vserver: "{{ vserver_sap_fc }}"
-    flexvol_name: "{{ type.volumes[0].size_gb }}"
+    flexvol_name: "{{ type.volumes[0].name }}"
     name: "{{ type.volumes[0].qtrees[0].name }}"
 
 - name: Create lun {{ type.volumes[0].qtrees[0].luns[0].name }}

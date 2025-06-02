@@ -17,7 +17,7 @@
   serial: 1
   gather_facts: false
   tasks:
-    - name: Include role create_luns
+    - name: Include role ehp7
       ansible.builtin.include_role:
         name: ehp7
       vars:
