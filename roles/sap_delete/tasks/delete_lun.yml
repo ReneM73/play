@@ -1,8 +1,4 @@
 ---
-- name: Show
-  debug:
-    msg: "{{ lun }}"
-
 - name: Get LUNs from volume {{ volume }}
   ansible.builtin.include_role:
     name: sgs.ontap.rest
@@ -36,7 +32,8 @@
     name: sgs.ontap.lun
   vars:
     vserver: "{{ vserver_sap_fc }}"
-    path: "{{ lun.name }}"
+    flexvol_name: "{{ lun.location.volume.name }}"
+    name: "{{ lun.location.logical_unit }}"
     state: absent
   loop: "{{ lun_info.ontap_info.storage_luns.records }}"
   loop_control:
