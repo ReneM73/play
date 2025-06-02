@@ -40,7 +40,7 @@
   tasks:
     - name: Show the initiators to be added
       ansible.builtin.debug:
-        msg: "Adding initiators: {{ hostvars['GDC00620']['stored_wwns'] }}"
+        msg: "Adding initiators: {{ hostvars[{{ aix_host }}]['stored_wwns'] }}"
 
     - name: Include role igroup initiator
       ansible.builtin.include_role:
