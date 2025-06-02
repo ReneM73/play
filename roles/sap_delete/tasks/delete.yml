@@ -1,0 +1,16 @@
+---
+- name: Include task to delete LUNs in the volume {{ item.volume }}
+  ansible.builtin.include_tasks:
+    file: delete_lun.yml
+  vars:
+    volume: "{{ item.volume }}"
+    lun: "{{ item.volume.lun | default(omit) }}"
+
+- name: Delete volume {{ item.volume }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.volume
+  vars:
+    vserver: "{{ vserver_sap_fc }}"
+    name: "{{ item.volume }}"
+    state: absent
+  when: item.volume.lun is not defined
