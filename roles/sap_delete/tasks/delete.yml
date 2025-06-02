@@ -4,7 +4,7 @@
     file: delete_lun.yml
   vars:
     volume: "{{ item.volume }}"
-    lun: "{{ item.volume.lun | default(omit) }}"
+    lun: "{{ item.volume.lun }} | default(omit)"
 
 - name: Delete volume {{ item.volume }}
   ansible.builtin.include_role:
