@@ -29,7 +29,7 @@
     - name: Set initiators variable
       ansible.builtin.set_fact:
         stored_wwns: "{{ initiators }}"
-      delegate_to: localhost
+        cacheable: yes
 
 - name: Create Initiator Groups for SAP OS LUNs
   hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
@@ -41,7 +41,7 @@
         msg: "{{ hostvars['localhost']['sap_hosts_group'] }}"
     - name: Show the initiators to be added
       ansible.builtin.debug:
-        msg: "Adding initiators: {{ hostvars['localhost']['stored_wwns'] }}"
+        msg: "Adding initiators: {{ stored_wwns }}"
 
     - name: Include role igroup initiator
       ansible.builtin.include_role:
@@ -51,4 +51,4 @@
         state: present
         vserver: "{{ vserver_sap_fc }}"
         initiator_group: "fcp_{{ aix_host }}_01"
-        names: "{{ hostvars['GDC00620']['stored_wwns'] }}"
+        names: "{{ stored_wwns }}"
