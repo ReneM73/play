@@ -13,4 +13,4 @@
     vserver: "{{ vserver_sap_fc }}"
     name: "{{ item.volume }}"
     state: absent
-  when: item.volume.lun is not defined
+  when: item.volume.lun == ''
