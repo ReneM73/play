@@ -32,7 +32,6 @@
     - name: Set initiators variable
       ansible.builtin.set_fact:
         stored_wwns: "{{ initiators }}"
-      delegate_to: localhost
 
 - name: Add initiators to the igroup fcp_{{ aix_host }}_01
   hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
