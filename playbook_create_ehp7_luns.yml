@@ -1,0 +1,34 @@
+---
+- name: Set sap_hosts_group based on the input
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Set sap_hosts_group variable dynamically based on location
+      ansible.builtin.set_fact:
+        sap_hosts_group: >-
+          {{ 'sap' if location == 'both' else
+             hostvars[item].cluster_name if location == hostvars[item].city
+             else 'sap' }}
+      with_items: "{{ groups['sap'] }}"
+      when: location is defined
+
+- name: Create SAP EHP7 Volumes, Qtrees, and LUNs
+  hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
+  serial: 1
+  gather_facts: false
+  tasks:
+    - name: Include role create_luns
+      ansible.builtin.include_role:
+        name: ehp7
+      vars:
+        type: "{{ sap_ehp7 }}"
+        switch: create
+
+- name: Execute a script on the AIX jump host
+  hosts: aix_jumphost
+  gather_facts: false
+  tasks:
+    - name: Execute the ehp7_create_cmd command
+      ansible.builtin.raw: "{{ ehp7_create_cmd }}"
+      register: myout
+      failed_when: "'SUCCESS' not in myout.stdout_lines"

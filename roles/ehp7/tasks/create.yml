@@ -1,0 +1,57 @@
+---
+- name: Get best aggregate on cluster {{ cluster_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.aggregate
+    tasks_from: get_best_aggregate.yml
+
+- name: Create volume {{ type.volumes[0].name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.volume
+  vars:
+    state: present
+    vserver: "{{ vserver_sap_fc }}"
+    aggregate_name: "{{ best_aggregate }}"
+    name: "{{ type.volumes[0].name }}"
+    size: "{{ type.volumes[0].size_gb }}"
+    snapshot_policy: none
+    atime_update: false
+    space_guarantee: none
+    percent_snapshot_space: 0
+    volume_security_style: unix
+    snapshot_auto_delete:
+      state: "off"
+
+- name: Create qtree {{ type.volumes[0].qtrees[0].name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.qtree
+  vars:
+    state: present
+    vserver: "{{ vserver_sap_fc }}"
+    flexvol_name: "{{ type.volumes[0].size_gb }}"
+    name: "{{ type.volumes[0].qtrees[0].name }}"
+
+- name: Create lun {{ type.volumes[0].qtrees[0].luns[0].name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.lun
+  vars:
+    state: present
+    vserver: "{{ vserver_sap_fc }}"
+    flexvol_name: "{{ type.volumes[0].name }}"
+    qtree_name: "{{ type.volumes[0].qtrees[0].name }}"
+    name: "{{ type.volumes[0].qtrees[0].luns[0].name }}"
+    size: "{{ type.volumes[0].qtrees[0].luns[0].size_gb }}"
+    size_unit: gb
+    os_type: "{{ type.volumes[0].qtrees[0].luns[0].os_type }}"
+    space_allocation: false
+    space_reserve: false
+
+- name: Map LUN {{ type.volumes[0].qtrees[0].luns[0].name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.lun
+    tasks_from: map.yml
+  vars:
+    state: present
+    vserver: "{{ vserver_sap_fc }}"
+    initiator_group_name: "fcp_{{ aix_host }}_01"
+    path: "/vol/{{ type.volumes[0].name }}/{{ type.volumes[0].qtrees[0].name }}/{{ type.volumes[0].qtrees[0].luns[0].name }}"
+    lun_id: "{{ type.volumes[0].qtrees[0].luns[0].lun_id }}"

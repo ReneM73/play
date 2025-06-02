@@ -1,5 +1,5 @@
 ---
-- name: Get all LUNs in volume {{ volume.destination_name }}
+- name: Get all LUNs with the pattern {{ lun_pattern }}
   ansible.builtin.include_role:
     name: sgs.ontap.rest
     tasks_from: info.yml

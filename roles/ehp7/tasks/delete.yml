@@ -1,0 +1,34 @@
+---
+- name: Get all LUNs from volume {{ type.volumes[0].name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: info.yml
+  vars:
+    gather_subset: storage/luns
+    fields: '*'
+    parameters:
+      svm.name: "{{ vserver_sap_fc }}"
+      location.volume.name: "{{ type.volumes[0].name }}"
+    result_var: lun_info
+
+- name: Unmap all LUNs in volume {{ type.volumes[0].name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.lun
+    tasks_from: map.yml
+  vars:
+    vserver: "{{ vserver_sap_fc }}"
+    path: "{{ item.name }}"
+    initiator_group_name: "fcp_{{ destination_server }}_01"
+    state: absent
+  loop: "{{ lun_info.ontap_info.storage_luns.records }}"
+  loop_control:
+    label: "{{ item.location.logical_unit }}"
+  when: lun_info.ontap_info.storage_luns.num_records > 0
+
+- name: Delete volume {{ type.volumes[0].name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.volume
+  vars:
+    vserver: "{{ vserver_sap_fc }}"
+    state: absent
+    name: "{{ type.volumes[0].name }}"

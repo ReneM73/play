@@ -1,0 +1,10 @@
+---
+- name: Include tasks create.yml for creating SAP EHP7 LUNs
+  ansible.builtin.include_tasks:
+    file: create.yml
+  when: switch == 'create'
+
+- name: Include tasks delete.yml for delete SAP EHP7 LUNs
+  ansible.builtin.include_tasks:
+    file: delete.yml
+  when: switch == 'delete'
