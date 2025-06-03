@@ -25,3 +25,15 @@
     destination_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].destination.path}}"
     relationship_state: broken
 
+- name: Recreate Snapmirror
+  ansible.builtin.include_role:
+    name: sgs.ontap.snapmirror
+  vars:
+    destination_hostname: "{{ cluster_opposite }}"
+    source_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].destination.path}}"
+    destination_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].source.path}}"
+    state: present
+    source_hostname: "{{ cluster_match }}"
+    relationship_state: acitve
+    policy: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].policy.name}}"
+    schedule : "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].transfer_schedule.name}}"
