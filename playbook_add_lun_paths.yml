@@ -43,4 +43,4 @@
         state: present
         vserver: "{{ vserver_sap_fc }}"
         initiator_group: "fcp_{{ aix_host }}_01"
-        names: "{{ stored_wwns }}"
+        names: "{{ hostvars[groups['aix_jumphost'][0]]['stored_wwns'] }}"
