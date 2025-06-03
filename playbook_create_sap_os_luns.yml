@@ -38,7 +38,7 @@
   tasks:
     - name: Show stored_wwns
       ansible.builtin.debug:
-        msg: "{{ hostvars['localhost']['sap_hosts_group']['stored_wwns'] }}"
+        msg: "{{ stored_wwns }}"
 
     - name: Include role igroup
       ansible.builtin.include_role:
@@ -48,7 +48,7 @@
         vserver: "{{ vserver_sap_fc }}"
         name: "fcp_{{ aix_host }}_01"
         initiator_group_type: fcp
-        initiator_names: "{{ hostvars['localhost']['sap_hosts_group']['stored_wwns'] }}"
+        initiator_names: "{{ hostvars['localhost']['stored_wwns'] }}"
         os_type: "{{ os_type }}"
 
 #- name: Create SAP OS Volumes, Qtrees, and LUNs
