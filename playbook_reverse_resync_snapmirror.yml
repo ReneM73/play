@@ -9,14 +9,19 @@
       with_items: "{{ groups['fss_leg'] }}"
       when: hostvars[item].city == location
 
+    - name: Get opposit host based on location
+      ansible.builtin.set_fact:
+        opposit_host: "{{ item }}"
+      with_items: "{{ groups['fss_leg'] }}"
+      when: hostvars[item].city != location
+
     - name: Set vserver and cluster facts
       ansible.builtin.set_fact:
-        vserver: "{{ hostvars[matched_host].vserver_smb_leg }}"
-        cluster_name: "{{ hostvars[matched_host].cluster_name }}"
-      when: matched_host is defined
+        cluster_match: "{{ hostvars[matched_host].cluster_name }}"
+        vserver_match: "{{ hostvars[matched_host].vserver_smb_leg }}"
+        cluster_opposit: "{{ hostvars[opposit_host].cluster_name }}"
+        vserver_opposit: "{{ hostvars[opposit_host].vserver_smb_leg }}"
 
-    - name: Display selected vservers and clusters
-      ansible.builtin.debug:
-        msg: "Primary: vserver={{ vserver }}, cluster={{ cluster_name }}"
-
-
+    - name: Include role reverse_resync
+      ansible.builtin.include_role:
+        name: sgs.ontap.reverse_resync
