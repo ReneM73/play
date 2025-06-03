@@ -23,24 +23,18 @@
 
     - name: Show initiators (must be a comma separeted list)
       ansible.builtin.debug:
-        msg: "{{ wwns.stdout_lines | join(',') }}"
+        msg: "{{ wwns.stdout_lines }}"
       when: initiators is not defined
 
     - name: Set initiators variable
       ansible.builtin.set_fact:
-        stored_wwns: "{{ initiators }}"
-        cacheable: yes
-      delegate_to: localhost
+        stored_wwns: "{{ initiators if initiators is defined else wwns.stdout_lines }}"
 
-- name: Create Initiator Groups for SAP OS LUNs
+- name: Create Add Initiator to igroup fcp_{{ aix_host }}_01
   hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
   serial: 1
   gather_facts: false
   tasks:
-    - name: Show the initiators to be added
-      ansible.builtin.debug:
-        msg: "Adding initiators: {{ hostvars['localhost'] }}"
-
     - name: Include role igroup initiator
       ansible.builtin.include_role:
         name: sgs.ontap.igroup

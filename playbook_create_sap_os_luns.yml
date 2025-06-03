@@ -46,14 +46,14 @@
         initiator_names: "{{ hostvars[groups['aix_jumphost'][0]]['stored_wwns'] }}"
         os_type: "{{ os_type }}"
 
-#- name: Create SAP OS Volumes, Qtrees, and LUNs
-#  hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
-#  serial: 1
-#  gather_facts: false
-#  tasks:
-#    - name: Include role create_luns
-#      ansible.builtin.include_role:
-#        name: sap_create
-#      vars:
-#        type: "{{ sap_os }}"
-#        os_type: "{{ os_type }}"
+- name: Create SAP OS Volumes, Qtrees, and LUNs
+  hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
+  serial: 1
+  gather_facts: false
+  tasks:
+    - name: Include role create_luns
+      ansible.builtin.include_role:
+        name: sap_create
+      vars:
+        type: "{{ sap_os }}"
+        os_type: "{{ os_type }}"
