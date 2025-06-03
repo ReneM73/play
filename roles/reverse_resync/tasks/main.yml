@@ -6,7 +6,7 @@
   vars:
     cluster_name: "{{ cluster_opposite }}"
     gather_subset: snapmirror/relationships
-    #fields: "*"
+    fields: "*"
     parameters:
       svm.name: "{{ vserver_opposite }}"
       destination.path: "{{ volume }}*"
