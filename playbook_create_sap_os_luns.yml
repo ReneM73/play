@@ -38,7 +38,7 @@
   tasks:
     - name: Show stored_wwns
       ansible.builtin.debug:
-        msg: "{{ stored_wwns }}"
+        msg: "{{ hostvars['localhost']['stored_wwns'] }}"
 
     - name: Include role igroup
       ansible.builtin.include_role:
