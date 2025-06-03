@@ -24,4 +24,4 @@
 
     - name: Include role reverse_resync
       ansible.builtin.include_role:
-        name: sgs.ontap.reverse_resync
+        name: reverse_resync
