@@ -34,6 +34,6 @@
     destination_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].source.path}}"
     state: present
     source_hostname: "{{ cluster_match }}"
-    relationship_state: acitve
+    relationship_state: active
     policy: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].policy.name}}"
     schedule : "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].transfer_schedule.name}}"
