@@ -1,0 +1,17 @@
+---
+- name: Reverse and resync Snapmirror
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Get matching hosts based on location
+      ansible.builtin.set_fact:
+        matched_hosts: "{{ groups['fss_leg'] | select('search', location) | list }}"
+        opposite_hosts: "{{ groups['fss_leg'] | reject('search', location) | list }}"
+
+    - name: Set vserver and cluster facts
+      ansible.builtin.set_fact:
+        vserver_primary: "{{ hostvars[matched_hosts[0]].vserver_smb_leg }}"
+        cluster_primary: "{{ hostvars[matched_hosts[0]].cluster_name }}"
+        vserver_opposite: "{{ hostvars[opposite_hosts[0]].vserver_smb_leg }}"
+        cluster_opposite: "{{ hostvars[opposite_hosts[0]].cluster_name }}"
+
