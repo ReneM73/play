@@ -8,8 +8,7 @@
     gather_subset: snapmirror/relationships
     fields: "*"
     parameters:
-      svm.name: "{{ vserver_opposite }}"
-      destination.path: "{{ volume }}*"
+    destination.path: "{{ volume }}*"
     result_var: snapmirror_info
 
 - name: Show Snapmirror information
