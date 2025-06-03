@@ -34,15 +34,23 @@
     destination_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].source.path}}"
     state: present
     source_hostname: "{{ cluster_match }}"
-    relationship_state: active
     policy: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].policy.name}}"
     schedule : "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].transfer_schedule.name}}"
 
-- name: Recreate Snapmirror
+- name: Resync Snapmirror
   ansible.builtin.include_role:
     name: sgs.ontap.snapmirror
   vars:
     destination_hostname: "{{ cluster_opposite }}"
+    source_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].destination.path}}"
     destination_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].source.path}}"
-    state: present
     relationship_state: active
+
+- name: Delete Snapmirror
+  ansible.builtin.include_role:
+    name: sgs.ontap.snapmirror
+  vars:
+    destination_hostname: "{{ cluster_match }}"
+    source_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].source.path}}"
+    destination_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].destination.path}}"
+    state: absent
