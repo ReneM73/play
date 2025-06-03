@@ -36,6 +36,10 @@
   serial: 1
   gather_facts: false
   tasks:
+    - name: Show stored_wwns
+      ansible.builtin.debug:
+        msg: "{{ hostvars['localhost']['sap_hosts_group']['stored_wwns'] }}"
+
     - name: Include role igroup
       ansible.builtin.include_role:
         name: sgs.ontap.igroup
