@@ -45,7 +45,6 @@
     source_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].destination.path}}"
     destination_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].source.path}}"
     relationship_state: active
-  when: "'localhost' in ansible_play_hosts and ansible_play_hosts_all | selectattr('changed', 'equalto', false) | list | length > 0"
 
 - name: Delete Snapmirror
   ansible.builtin.include_role:
