@@ -4,34 +4,24 @@
     name: sgs.ontap.rest
     tasks_from: info.yml
   vars:
-    cluster_name: "{{ cluster_opposite }}"
+    cluster_name: "{{ cluster_match }}"
     gather_subset: snapmirror/relationships
-    fields: "*"
+    fields:
+      - source
+      - destination
+      - policy.name
+      - transfer_schedule.name
     parameters:
-    destination.path: "{{ volume }}*"
+      destination.svm.name: "{{ vserver_match }}"
+      destination.path: "*{{ volume }}*"
     result_var: snapmirror_info
 
-- name: Show Snapmirror information
-  ansible.builtin.debug:
-    msg: "{{ snapmirror_info }}"
-
-
-
-
-
-
-
-
-
-
-
-
-#- name: Break snapmirror
-#  ansible.builtin.include_role:
-#    name: sgs.ontap.snapmirror
-#    vars:
-#      destination_hostname: "{{ cluster_opposite }}"
-#      source_path: --> from get snapmirror
-#      destination_path: --> from get snapmirror
-#      relationship_state: broken
+- name: Break snapmirror
+  ansible.builtin.include_role:
+    name: sgs.ontap.snapmirror
+    vars:
+      destination_hostname: "{{ cluster_match }}"
+      source_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].source.path}}"
+      destination_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].destination.path}}"
+      relationship_state: broken
 
