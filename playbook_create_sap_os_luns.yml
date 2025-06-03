@@ -16,10 +16,10 @@
   hosts: aix_jumphost
   gather_facts: false
   tasks:
-#    - name: Execute the get WWN command
-#      ansible.builtin.raw: "{{ get_wwn_cmd }}"
-#      register: wwns
-#      when: initiators is not defined
+    - name: Execute the get WWN command
+      ansible.builtin.raw: "{{ get_wwn_cmd }}"
+      register: wwns
+      when: initiators is not defined
 
     - name: Show initiators (must be a comma separeted list)
       ansible.builtin.debug:
