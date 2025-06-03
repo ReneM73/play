@@ -23,13 +23,13 @@
 
     - name: Show initiators (must be a comma separeted list)
       ansible.builtin.debug:
-        msg: "{{ wwns.stdout_lines | join(',') }}"
+        msg: "{{ wwns.stdout_lines }}"
       when: initiators is not defined
 
     - name: Set initiators variable
       ansible.builtin.add_host:
         name: localhost
-        stored_wwns: "{{ initiators when initiators is defined else wwns.stdout_lines }}"
+        stored_wwns: "{{ initiators if initiators is defined else wwns.stdout_lines }}"
 
 - name: Create Initiator Groups for SAP OS LUNs
   hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
