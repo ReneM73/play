@@ -3,25 +3,20 @@
   hosts: localhost
   gather_facts: false
   tasks:
-    - name: Get matching hosts based on location
+    - name: Get matching host based on location
       ansible.builtin.set_fact:
-        matched_hosts: "{{ groups['fss_leg'] | select('search', location) | list }}"
-        opposite_hosts: "{{ groups['fss_leg'] | reject('search', location) | list }}"
+        matched_host: "{{ item }}"
+      with_items: "{{ groups['fss_leg'] }}"
+      when: hostvars[item].city == location
 
-    - name: Set primary vserver and cluster facts
+    - name: Set vserver and cluster facts
       ansible.builtin.set_fact:
-        vserver_primary: "{{ hostvars[matched_hosts[0]].vserver_smb_leg }}"
-        cluster_primary: "{{ hostvars[matched_hosts[0]].cluster_name }}"
-      when: matched_hosts | length > 0
-
-    - name: Set opposite vserver and cluster facts
-      ansible.builtin.set_fact:
-        vserver_opposite: "{{ hostvars[opposite_hosts[0]].vserver_smb_leg }}"
-        cluster_opposite: "{{ hostvars[opposite_hosts[0]].cluster_name }}"
-      when: opposite_hosts | length > 0
+        vserver: "{{ hostvars[matched_host].vserver_smb_leg }}"
+        cluster_name: "{{ hostvars[matched_host].cluster_name }}"
+      when: matched_host is defined
 
     - name: Display selected vservers and clusters
       ansible.builtin.debug:
-        msg: "Primary: vserver={{ vserver_primary }}, cluster={{ cluster_primary }} | Opposite: vserver={{ vserver_opposite }}, cluster={{ cluster_opposite }}"
+        msg: "Primary: vserver={{ vserver }}, cluster={{ cluster_name }}"
 
 
