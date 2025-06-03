@@ -37,3 +37,12 @@
     relationship_state: active
     policy: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].policy.name}}"
     schedule : "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].transfer_schedule.name}}"
+
+- name: Recreate Snapmirror
+  ansible.builtin.include_role:
+    name: sgs.ontap.snapmirror
+  vars:
+    destination_hostname: "{{ cluster_opposite }}"
+    destination_path: "{{ snapmirror_info.ontap_info.snapmirror_relationships.records[0].source.path}}"
+    state: present
+    relationship_state: active
