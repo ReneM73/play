@@ -19,8 +19,8 @@
       ansible.builtin.set_fact:
         cluster_match: "{{ hostvars[matched_host].cluster_name }}"
         vserver_match: "{{ hostvars[matched_host].vserver_smb_leg }}"
-        cluster_opposit: "{{ hostvars[opposit_host].cluster_name }}"
-        vserver_opposit: "{{ hostvars[opposit_host].vserver_smb_leg }}"
+        cluster_opposite: "{{ hostvars[opposit_host].cluster_name }}"
+        vserver_opposite: "{{ hostvars[opposit_host].vserver_smb_leg }}"
 
     - name: Include role reverse_resync
       ansible.builtin.include_role:
