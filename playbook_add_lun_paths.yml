@@ -40,7 +40,7 @@
         name: sgs.ontap.igroup
         tasks_from: initiator.yml
       vars:
-        state: "{{ state | default('present') }}"
+        state: "{{ state }} | default('present')"
         vserver: "{{ vserver_sap_fc }}"
         initiator_group: "fcp_{{ aix_host }}_01"
         names: "{{ hostvars[groups['aix_jumphost'][0]]['stored_wwns'] }}"
