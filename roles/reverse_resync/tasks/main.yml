@@ -4,10 +4,10 @@
     name: sgs.ontap.rest
     tasks_from: info.yml
   vars:
+    cluster_name: "{{ cluster_opposite }}"
     gather_subset: snapmirror/relationships
     #fields: "*"
     parameters:
-      cluster_name: "{{ cluster_opposite }}"
       svm.name: "{{ vserver_opposite }}"
       destination.path: "{{ volume }}*"
     result_var: snapmirror_info
