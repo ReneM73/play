@@ -12,3 +12,37 @@
     - name: Display myout
       debug:
         msg: myout
+
+- name: Send email notification
+  hosts: sap
+  gather_facts: false
+  tasks:
+    - name: Load SAP LUNs from inventory file
+      ansible.builtin.set_fact:
+        selected_luns: "{{  delete_sap_luns }}"
+
+    - name: Send Mail
+      delegate_to: localhost
+      ansible.builtin.mail:
+        host: "{{ mail.host }}"
+        from: "{{ mail.from }}"
+        to: "{{ mail.to }}"
+        subject: "Delete LUN's for SAP Host {{ aix_host }}"
+        body: |
+          <html>
+          <body>
+            <p>Hi Team,</p>
+            <p>AWX would like to delete the following SAP LUNs for the host <strong>{{ aix_host }}</strong>:</p>
+            <p><strong>SAP Variant:</strong> {{ sap_variant }}</p>
+            <ul>
+            {% for lun in selected_luns[sap_variant] %}
+              <li><strong>Volume:</strong> {{ lun.volume }}</li>
+              {% if lun.lun is defined %}
+                &nbsp;&nbsp;&nbsp;&nbsp;<strong>LUN:</strong> {{ lun.lun.split('_')[-2] }}_{{ lun.lun.split('_')[-1] }}<br>
+              {% endif %}
+            {% endfor %}
+            </ul>
+            <p>Regards,<br>AWX Server</p>
+          </body>
+          </html>
+        subtype: html
