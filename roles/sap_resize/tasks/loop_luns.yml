@@ -1,4 +1,17 @@
 ---
+- name: Get actual lun size from lun {{ lun.name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: info.yml
+  vars:
+    gather_subset: storage/luns
+    fields: '*'
+    parameters:
+      svm.name: "{{ vserver_sap_fc }}"
+      location.volume.name: "{{ volume_dict.name }}"
+      location.logical_unit: "{{ lun.name }}"
+    result_var: lun_size_info
+
 - name: Resize lun {{ lun.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.lun
@@ -9,3 +22,4 @@
     name: "{{ lun.name }}"
     size: "{{ lun.size_gb }}"
     size_unit: gb
+  when: (lun.size_gb | int) > (lun_size_info.ontap_info.storage_luns.records[0].space.size |int /1024 / 1024)
