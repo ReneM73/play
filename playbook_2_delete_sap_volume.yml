@@ -19,8 +19,6 @@
   serial: 1
   gather_facts: false
   tasks:
-    - name: Execute SAP Delete Role
-      tasks:
-        - name: Include role sap_delete
-          ansible.builtin.include_role:
-            name: sap_delete
+    - name: Include role sap_delete
+      ansible.builtin.include_role:
+        name: sap_delete
