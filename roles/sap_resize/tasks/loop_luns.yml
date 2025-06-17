@@ -14,8 +14,8 @@
 
 - name: Show lun size information
   ansible.builtin.debug:
-    #msg: "LUN {{ lun.name }} has size {{ lun_size_info.ontap_info.storage_luns.records[0].space.size | int / 1024 / 1024 }} GB"
-    msg: "{{ lun_size_info }}"
+    msg: "LUN {{ lun.name }} has size {{ lun_size_info.ontap_info.storage_luns.records[0].space.size | int / 1024 / 1024 }} GB"
+
 - name: Resize lun {{ lun.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.lun
