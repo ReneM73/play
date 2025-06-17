@@ -17,7 +17,7 @@
     gather_subset: storage/volume
     parameters:
       svm.name: "{{ vserver_sap_fc }}"
-      location.volume.name: "{{ volume_dict.name }}"
+      name: "{{ volume_dict.name }}"
     result_var: volume_info
 
 - name: Resize volume {{ volume_dict.name }}
