@@ -1,0 +1,14 @@
+---
+- name: Execute a script on the AIX jump host
+  hosts: aix_jumphost
+  gather_facts: false
+  tasks:
+    - name: Execute the nseries-removal-check aix command
+      ansible.builtin.raw: "{{ removal_check_cmd }}"
+      register: myout
+      failed_when: "'SUCCESS' not in myout.stdout"
+      when: removal_check and sap_hosts_group == "sap"
+
+    - name: Display myout
+      debug:
+        msg: myout
