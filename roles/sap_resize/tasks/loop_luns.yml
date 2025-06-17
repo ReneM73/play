@@ -26,4 +26,4 @@
     name: "{{ lun.name }}"
     size: "{{ lun.size_gb }}"
     size_unit: gb
-  when: (lun.size_gb | int) > (lun_size_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024)
+  when: (lun.size_gb | int) > (lun_size_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024)
