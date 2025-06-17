@@ -12,7 +12,7 @@
         sap_hosts_group: "{{ sap_hosts_group + [item] }}"
       with_items: "{{ groups['sap'] }}"
       when:
-        - location is not defined or location == 'sap' or or location == 'both' orlocation == hostvars[item].city
+        - location is not defined or location == 'sap' or location == 'both' or location == hostvars[item].city
 
     - name: Show group
       ansible.builtin.debug:
