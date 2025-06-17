@@ -9,6 +9,17 @@
     volume_dict: "{{ volume }}"
   when: volume | type_debug == "dict"
 
+- name: Get actual lun size from lun {{ lun.name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: info.yml
+  vars:
+    gather_subset: storage/volume
+    parameters:
+      svm.name: "{{ vserver_sap_fc }}"
+      location.volume.name: "{{ volume_dict.name }}"
+    result_var: volume_info
+
 - name: Resize volume {{ volume_dict.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.volume
@@ -17,6 +28,7 @@
     vserver: "{{ vserver_sap_fc }}"
     name: "{{ volume_dict.name }}"
     size: "{{ volume_dict.size_gb }}"
+  when: volume_info.ontap_info.storage_volumes.num_records == 1
 
 - name: Loop over LUNs
   ansible.builtin.include_tasks:
@@ -25,3 +37,4 @@
   loop_control:
     loop_var: lun
     label: " Resize lun {{ lun.name }}"
+  when: volume_info.ontap_info.storage_volumes.num_records == 1
