@@ -5,7 +5,7 @@
   tasks:
     - name: Define sap_hosts_group
       ansible.builtin.set_fact:
-        sap_hosts_group: "{{ groups['sap'] if location is not defined or location == 'sap' else groups['sap'] | selectattr('city', 'equalto', location) | map(attribute='cluster_name') | list }}"
+        sap_hosts_group: "{{ groups['sap'] if location is not defined or location == 'sap' else groups['sap'] | selectattr('cluster_name', 'equalto', location) | list }}"
 
     - name: Show group
       ansible.builtin.debug:
