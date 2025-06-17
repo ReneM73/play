@@ -3,12 +3,11 @@
   hosts: localhost
   gather_facts: false
   tasks:
-    - name: Set sap_hosts_group variable dynamically based on location
+    - name: Set sap_hosts_group variable
       ansible.builtin.set_fact:
         sap_hosts_group: >-
-          {{ 'sap' if location == 'both' else
-             hostvars[item].cluster_name if location == hostvars[item].city
-             else 'sap' }}
+          {{ 'sap' if location == 'sap' else
+             item if location == hostvars[item].city else '' }}
       with_items: "{{ groups['sap'] }}"
       when: location is defined
       
