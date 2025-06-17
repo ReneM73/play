@@ -14,10 +14,10 @@
       when:
         - location is not defined or location == 'sap' or location == 'both' or location == hostvars[item].city
 
-- name: Execute SAP Delete Role
-  hosts: "{{ sap_hosts_group }}"
-  gather_facts: false
-  tasks:
-    - name: Include role sap_delete
-      ansible.builtin.include_role:
-        name: sap_delete
+    - name: Execute SAP Delete Role
+      hosts: "{{ sap_hosts_group }}"
+      gather_facts: false
+      tasks:
+        - name: Include role sap_delete
+          ansible.builtin.include_role:
+            name: sap_delete
