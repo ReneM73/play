@@ -1,4 +1,19 @@
 ---
+- name: Set sap_hosts_group based on the input
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Initialize sap_hosts_group
+      ansible.builtin.set_fact:
+        sap_hosts_group: []
+
+    - name: Set sap_hosts_group based on location
+      ansible.builtin.set_fact:
+        sap_hosts_group: "{{ sap_hosts_group + [item] }}"
+      with_items: "{{ groups['sap'] }}"
+      when:
+        - location is not defined or location == 'sap' or location == 'both' or location == hostvars[item].city
+
 - name: Execute SAP Delete Role
   hosts: "{{ sap_hosts_group }}"
   gather_facts: false
