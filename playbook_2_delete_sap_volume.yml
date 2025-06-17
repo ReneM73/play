@@ -20,8 +20,6 @@
   gather_facts: false
   tasks:
     - name: Execute SAP Delete Role
-      hosts: "{{ sap_hosts_group }}"
-      gather_facts: false
       tasks:
         - name: Include role sap_delete
           ansible.builtin.include_role:
