@@ -7,7 +7,7 @@
       ansible.builtin.set_fact:
         sap_hosts_group: >-
           {{ 'sap' if location == 'sap' else
-             item if location == hostvars[item].city else '' }}
+             item if location == hostvars.city else '' }}
       with_items: "{{ groups['sap'] }}"
       when: location is defined
 
