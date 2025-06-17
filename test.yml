@@ -11,11 +11,6 @@
       with_items: "{{ groups['sap'] }}"
       when: location is defined
       
-- name: Create SAP HANA Volumes, Qtrees, and LUNs
-  hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
-  serial: 1
-  gather_facts: false
-  tasks:
-    - name: Show sap_hosts_group
-      ansible.builtin.debug:
+    - name: Show group
+      debug:
         msg: "sap_hosts_group is set to {{ sap_hosts_group }}"
