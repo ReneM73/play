@@ -8,16 +8,16 @@
       ansible.builtin.include_role:
         name: sap_resize
 
-- name: Execute a script on the AIX jump host
-  hosts: aix_jumphost
-  gather_facts: false
-  tasks:
-    - name: Execute the refresh prepare aix command
-      ansible.builtin.raw: "{{ extend_mirrored_fs }}"
-      register: myout
-      failed_when: "'WFA STATUS MESSAGE : PROCESS FINISH' not in myout.stdout_lines"
-      loop: "{{ volume_dict.luns }}"
-      loop_control:
-        loop_var: lun
-        label: " Execute script for lun {{ lun.name }}"
-      when: execute_extend_mirrored_fs and sap_hosts_group == "sap"
+#- name: Execute a script on the AIX jump host
+#  hosts: aix_jumphost
+#  gather_facts: false
+#  tasks:
+#    - name: Execute the refresh prepare aix command
+#      ansible.builtin.raw: "{{ extend_mirrored_fs }}"
+#      register: myout
+#      failed_when: "'WFA STATUS MESSAGE : PROCESS FINISH' not in myout.stdout_lines"
+#      loop: "{{ volume_dict.luns }}"
+#      loop_control:
+#        loop_var: lun
+#        label: " Execute script for lun {{ lun.name }}"
+#      when: execute_extend_mirrored_fs and sap_hosts_group == "sap"
