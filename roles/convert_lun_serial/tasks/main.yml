@@ -17,7 +17,9 @@
   loop: "{{ lun_info.ontap_info.storage_luns.records }}"
   loop_control:
     label: "{{ item.location.logical_unit }}"
+  when: lun_info.ontap_info.storage_luns.num_records > 0
 
 - name: Show
   ansible.builtin.debug:
     msg: "{{ lun_linux_id }}"
+  when: lun_info.ontap_info.storage_luns.num_records > 0

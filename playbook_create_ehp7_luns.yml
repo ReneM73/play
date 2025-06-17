@@ -3,14 +3,16 @@
   hosts: localhost
   gather_facts: false
   tasks:
-    - name: Set sap_hosts_group variable dynamically based on location
+    - name: Initialize sap_hosts_group
       ansible.builtin.set_fact:
-        sap_hosts_group: >-
-          {{ 'sap' if location == 'both' else
-             hostvars[item].cluster_name if location == hostvars[item].city
-             else 'sap' }}
+        sap_hosts_group: []
+
+    - name: Set sap_hosts_group based on location
+      ansible.builtin.set_fact:
+        sap_hosts_group: "{{ sap_hosts_group + [item] }}"
       with_items: "{{ groups['sap'] }}"
-      when: location is defined
+      when:
+        - location is not defined or location == 'sap' or location == 'both' or location == hostvars[item].city
 
 - name: Create SAP EHP7 Volumes, Qtrees, and LUNs
   hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
@@ -24,11 +26,11 @@
         type: "{{ sap_ehp7 }}"
         switch: create
 
-# - name: Execute a script on the AIX jump host
-#   hosts: aix_jumphost
-#   gather_facts: false
-#   tasks:
-#     - name: Execute the ehp7_create_cmd command
-#       ansible.builtin.raw: "{{ ehp7_create_cmd }}"
-#       register: myout
-#       failed_when: "'SUCCESS' not in myout.stdout_lines"
+- name: Execute a script on the AIX jump host
+  hosts: aix_jumphost
+  gather_facts: false
+  tasks:
+    - name: Execute the ehp7_create_cmd command
+      ansible.builtin.raw: "{{ ehp7_create_cmd }}"
+      register: myout
+      failed_when: "'SUCCESS' not in myout.stdout_lines"

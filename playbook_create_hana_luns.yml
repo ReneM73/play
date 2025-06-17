@@ -3,13 +3,16 @@
   hosts: localhost
   gather_facts: false
   tasks:
-    - name: Set sap_hosts_group variable
+    - name: Initialize sap_hosts_group
       ansible.builtin.set_fact:
-        sap_hosts_group: >-
-          {{ 'sap' if location == 'sap' else
-             item if location == hostvars.city else '' }}
+        sap_hosts_group: []
+
+    - name: Set sap_hosts_group based on location
+      ansible.builtin.set_fact:
+        sap_hosts_group: "{{ sap_hosts_group + [item] }}"
       with_items: "{{ groups['sap'] }}"
-      when: location is defined
+      when:
+        - location is not defined or location == 'sap' or location == 'both' or location == hostvars[item].city
 
 - name: Create SAP HANA Volumes, Qtrees, and LUNs
   hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
