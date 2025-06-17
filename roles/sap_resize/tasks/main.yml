@@ -9,12 +9,12 @@
     volume_dict: "{{ volume }}"
   when: volume | type_debug == "dict"
 
-- name: Get actual lun size from lun {{ lun.name }}
+- name: Get volume information for {{ volume_dict.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.rest
     tasks_from: info.yml
   vars:
-    gather_subset: storage/volume
+    gather_subset: storage/volumes
     parameters:
       svm.name: "{{ vserver_sap_fc }}"
       name: "{{ volume_dict.name }}"
