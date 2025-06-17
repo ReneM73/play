@@ -14,6 +14,11 @@
       when:
         - location is not defined or location == 'sap' or location == 'both' or location == hostvars[item].city
 
+- name: Delete SAP LUNs
+  hosts: "{{ hostvars['localhost']['sap_hosts_group'] }}"
+  serial: 1
+  gather_facts: false
+  tasks:
     - name: Execute SAP Delete Role
       hosts: "{{ sap_hosts_group }}"
       gather_facts: false
