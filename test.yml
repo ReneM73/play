@@ -3,14 +3,18 @@
   hosts: localhost
   gather_facts: false
   tasks:
-    - name: Set sap_hosts_group variable
+    - name: Initialize sap_hosts_group
       ansible.builtin.set_fact:
-        sap_hosts_group: >-
-          {{ 'sap' if location == 'sap' else
-             item if location == hostvars.city else '' }}
+        sap_hosts_group: []
+
+    - name: Set sap_hosts_group based on location
+      ansible.builtin.set_fact:
+        sap_hosts_group: "{{ sap_hosts_group + [item] }}"
       with_items: "{{ groups['sap'] }}"
-      when: location is defined
-      
+      when:
+        - location is defined
+        - location == 'sap' or location == hostvars[item].city
+
     - name: Show group
-      debug:
+      ansible.builtin.debug:
         msg: "sap_hosts_group is set to {{ sap_hosts_group }}"
