@@ -28,7 +28,7 @@
     name: sgs.ontap.lun
   vars:
     state: present
-    vserver: "{{ lun_info.ontap_info.storage_luns.records[0].name.svm.name}}"
+    vserver: "{{ lun_info.ontap_info.storage_luns.records[0].svm.name}}"
     name: "{{ lun_info.ontap_info.storage_luns.records[0].name}}"
     size: "{{ size_gb }}"
     size_unit: gb
