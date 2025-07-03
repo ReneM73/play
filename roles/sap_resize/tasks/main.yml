@@ -34,7 +34,7 @@
   vars:
     state: present
     vserver: "{{ lun_info.ontap_info.storage_luns.records[0].svm.name}}"
-    name: "{{ lun_info.ontap_info.storage_luns.records[0].name}}"
+    flexvol_name: "{{ lun_info.ontap_info.storage_luns.records[0].name}}"
     size: "{{ size_gb }}"
     size_unit: gb
 
@@ -48,7 +48,7 @@
       - space
     parameters:
       svm.name: "{{ lun_info.ontap_info.storage_luns.records[0].name.svm.name }}"
-      flexvol_name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}"
+      location.volume.name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}"
     result_var: volume_info
 
 - name: SUM of all LUN sizes in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
