@@ -7,7 +7,7 @@
     gather_subset: storage/luns
     fields: '*'
     parameters:
-      location.logical_unit: "{{ lun }}"
+      location.logical_unit: "{{ aix_host }}*{{ lun }}"
     result_var: lun_info
 
 - name: Show Me
