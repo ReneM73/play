@@ -44,7 +44,6 @@
     parameters:
       svm.name: "{{ lun_info.ontap_info.storage_luns.records[0].name.svm.name }}"
       flexvol_name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}"
-      location.volume.name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}"
     result_var: volume_info
 
 - name: SUM of all LUN sizes in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
