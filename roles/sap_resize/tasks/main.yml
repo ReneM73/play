@@ -56,11 +56,12 @@
   ansible.builtin.set_fact:
     total_lun_size: "{{ ((volume_info.ontap_info.storage_luns.records | map(attribute='space.size') | sum) * volume_factor) | float | int }}"
 
-- name: Resize volume {{ volume_dict.name }}
+- name: Resize volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.volume
   vars:
     state: present
     vserver: "{{ lun_info.ontap_info.storage_luns.records[0].svm.name }}"
     name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}"
-    size: "{{ ((total_lun_size | float) / 1024 / 1024 / 1024) | round(1) }}"
+    size: "{{ ((total_lun_size | float) / 1024 / 1024 / 1024) | round(1) | string }}"
+    size_unit: gb
