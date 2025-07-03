@@ -58,7 +58,7 @@
 
 - name: SUM of all LUN sizes in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
   ansible.builtin.set_fact:
-    total_lun_size: "{{ volume_info.ontap_info.storage_luns.records | map(attribute='space.size') | sum }}"
+    total_lun_size: "{{ (volume_info.ontap_info.storage_luns.records | map(attribute='space.size') | sum) * volume_factor | int }}"
 
 - name: Show total LUN size in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
   ansible.builtin.debug:
