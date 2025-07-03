@@ -48,7 +48,7 @@
     fields:
       - space
     parameters:
-      svm.name: "{{ lun_info.ontap_info.storage_luns.records[0].name.svm.name }}"
+      svm.name: "{{ lun_info.ontap_info.storage_luns.records[0].svm.name }}"
       location.volume.name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}"
     result_var: volume_info
 
