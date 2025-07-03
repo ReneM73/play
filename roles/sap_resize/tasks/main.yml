@@ -7,12 +7,12 @@
     gather_subset: storage/luns
     fields: '*'
     parameters:
-      location.logical_unit: "{{ aix_host }}*{{ lun }}*"
+      location.logical_unit: "{{ lun }}"
     result_var: lun_info
 
 - name: Show Me
   ansible.builtin.debug:
-    msg: "LUN info: {{ lun_info.ontap_info.storage_luns.records[0] }}"
+    msg: "{{ lun_info }}"
 
 
 
