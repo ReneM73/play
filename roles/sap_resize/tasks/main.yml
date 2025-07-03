@@ -5,7 +5,10 @@
     tasks_from: info.yml
   vars:
     gather_subset: storage/luns
-    fields: '**'
+    fields:
+      - svm
+      - location
+      - space
     parameters:
       location.logical_unit: "{{ aix_host }}*{{ lun }}*"
     result_var: lun_info
