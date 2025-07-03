@@ -13,6 +13,11 @@
       location.logical_unit: "{{ aix_host }}*{{ lun }}*"
     result_var: lun_info
 
+- name: Feil playbook if more then two LUNs are found
+  ansible.builtin.fail:
+    msg: "More than one LUN found for {{ lun }}. Please specify a more specific LUN name."
+  when: lun_info.ontap_info.storage_luns.num_records > 1
+
 - name: Show Me
   ansible.builtin.debug:
     msg: "{{ lun_info }}"
