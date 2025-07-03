@@ -18,6 +18,11 @@
     msg: "More than one LUN found for {{ lun }}. Please specify a more specific LUN name."
   when: lun_info.ontap_info.storage_luns.num_records > 1
 
+- name: Fail playbook if no LUN is found
+  ansible.builtin.fail:
+    msg: "No LUN found for {{ lun }}. Please check the LUN name."
+  when: lun_info.ontap_info.storage_luns.num_records == 0
+
 - name: Fail playbook if new LUN size is smaller than current size
   ansible.builtin.fail:
     msg: "New LUN size {{ size_gb }} GB is smaller than current size {{ (lun_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024) }} GB"
