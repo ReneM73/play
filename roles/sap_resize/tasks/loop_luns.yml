@@ -12,6 +12,11 @@
       location.logical_unit: "{{ lun.name }}"
     result_var: lun_size_info
 
+- name: Fail playbook if new LUN size is smaller than current size
+  ansible.builtin.fail:
+    msg: "New LUN size {{ lun.size_gb }} GB is smaller than current size {{ (lun_size_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024) }} GB"
+  when: (lun.size_gb | int) < (lun_size_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024)
+
 - name: Resize lun {{ lun.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.lun
@@ -23,3 +28,36 @@
     size: "{{ lun.size_gb }}"
     size_unit: gb
   when: (lun.size_gb | int) > (lun_size_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- name: Resize volume {{ volume_dict.name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.volume
+  vars:
+    state: present
+    vserver: "{{ vserver_sap_fc }}"
+    name: "{{ volume_dict.name }}"
+    size: "{{ volume_dict.size_gb }}"
+
+
+- name: Loop over LUNs
+  ansible.builtin.include_tasks:
+    file: loop_luns.yml
+  loop: "{{ volume_dict.luns }}"
+  loop_control:
+    loop_var: lun
+    label: " Resize lun {{ lun.name }}"
+  when: volume_info.ontap_info.storage_volumes.num_records == 1
