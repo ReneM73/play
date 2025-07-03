@@ -63,5 +63,5 @@
     state: present
     vserver: "{{ lun_info.ontap_info.storage_luns.records[0].svm.name }}"
     name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}"
-    size: "{{ ((total_lun_size | float) / 1024 / 1024 / 1024) | round(1) | float }}"
+    size: "{{ ((total_lun_size | float) / 1024 / 1024 / 1024) | round(1) | int }}"
     size_unit: gb
