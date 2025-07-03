@@ -23,9 +23,33 @@
     msg: "New LUN size {{ size_gb }} GB is smaller than current size {{ (lun_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024) }} GB"
   when: (size_gb | int) < (lun_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024)
 
-- name: Show Me
+- name: Resize lun {{ lun_info.ontap_info.storage_luns.records[0].location.logical_unit }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.lun
+  vars:
+    state: present
+    vserver: "{{ lun_info.ontap_info.storage_luns.records[0].name.svm.name}}"
+    name: "{{ lun_info.ontap_info.storage_luns.records[0].name}}"
+    size: "{{ size_gb }}"
+    size_unit: gb
+
+- name: Get all LUN size in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: info.yml
+  vars:
+    gather_subset: storage/luns
+    fields:
+      - space
+    parameters:
+      svm.name: "{{ lun_info.ontap_info.storage_luns.records[0].name.svm.name }}"
+      location.volume.name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}"
+    result_var: volume_info
+
+- name: SUM of all LUN sizes in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
+  ansible.builtin.set_fact:
+    total_lun_size: "{{ volume_info.ontap_info.storage_luns.records | map(attribute='space.size') | sum / 1024 / 1024 / 1024 }}"
+
+- name: Show total LUN size in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
   ansible.builtin.debug:
-    msg: "{{ lun_info }}"
-
-
-
+    msg: "{{ total_lun_size | int /1024 / 1024 / 1024 }} GB"
