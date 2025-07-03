@@ -38,7 +38,7 @@
     name: "{{ lun_info.ontap_info.storage_luns.records[0].name }}"
     size: "{{ size_gb }}"
     size_unit: gb
-    space_reserve: disabled
+    space_reserve: false
 
 - name: Get all LUN size in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
   ansible.builtin.include_role:
