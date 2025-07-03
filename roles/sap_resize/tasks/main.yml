@@ -62,4 +62,4 @@
 
 - name: Show total LUN size in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
   ansible.builtin.debug:
-    msg: "{{ total_lun_size | int /1024 / 1024 / 1024 }}"
+    msg: "{{ ((total_lun_size | float) / 1024 / 1024 / 1024) | round(1) }}"
