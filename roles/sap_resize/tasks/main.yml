@@ -21,3 +21,6 @@
     loop_var: lun
     label: " Resize lun {{ lun.name }}"
 
+- name: Resize volume {{ volume_name }}
+  ansible.builtin.include_tasks:
+    file: resize_volume.yml

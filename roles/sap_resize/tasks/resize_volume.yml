@@ -1,0 +1,27 @@
+---
+- name: Get all LUN size in the volume {{ volume_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: info.yml
+  vars:
+    gather_subset: storage/luns
+    fields:
+      - svm
+      - space
+    parameters:
+      location.volume.name: "{{ volume_name }}"
+    result_var: lun_size_info
+
+- name: SUM of all LUN sizes in the volume {{ volume_name }}
+  ansible.builtin.set_fact:
+    new_volume_size: "{{ ((lun_size_info.ontap_info.storage_luns.records | map(attribute='space.size') | sum) * volume_factor) | float | int }}"
+
+- name: Resize volume {{ volume_name }}
+  ansible.builtin.include_role:
+    name: sgs.ontap.volume
+  vars:
+    state: present
+    vserver: "{{ lun_size_info.ontap_info.storage_luns.records[0].svm.name }}"
+    name: "{{ volume_name }}"
+    size: "{{ ((new_volume_size | float) / 1024 / 1024 / 1024) | int }}"
+    size_unit: gb
