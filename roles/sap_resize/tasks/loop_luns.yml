@@ -20,7 +20,7 @@
 
 - name: Fail playbook if new LUN size is smaller than current size
   ansible.builtin.fail:
-    msg: "New LUN size {{ lun.size_gb }} GB is smaller than current size {{ (lun_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024) }} GB"
+    msg: "{{ lun.name }}: New LUN size {{ lun.size_gb }} GB is smaller than current size {{ (lun_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024) }} GB"
   when: (lun.size_gb | int) < (lun_info.ontap_info.storage_luns.records[0].space.size | int / 1024 / 1024 / 1024)
 
 - name: Resize lun {{ lun.name }}
