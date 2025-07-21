@@ -1,63 +1,36 @@
 ---
-- name: Get actual lun size from lun {{ lun.name }}
+- name: Get info from lun {{ lun.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.rest
     tasks_from: info.yml
   vars:
     gather_subset: storage/luns
-    fields: '*'
+    fields:
+      - svm
+      - location
+      - space
     parameters:
-      svm.name: "{{ vserver_sap_fc }}"
-      location.volume.name: "{{ volume_dict.name }}"
-      location.logical_unit: "{{ lun.name }}"
-    result_var: lun_size_info
+      location.logical_unit: "{{ lun.name }}*"
+    result_var: lun_info
+
+- name: Fail playbook if no matching LUN is detected
+  ansible.builtin.fail:
+    msg: "LUN named '{{ lun.name }}' not found. Please verify the specified LUN name."
+  when: lun_info.ontap_info.storage_luns.num_records == 0
 
 - name: Fail playbook if new LUN size is smaller than current size
   ansible.builtin.fail:
-    msg: "New LUN size {{ lun.size_gb }} GB is smaller than current size {{ (lun_size_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024) }} GB"
-  when: (lun.size_gb | int) < (lun_size_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024)
+    msg: "New LUN size {{ lun_gb.size }} GB is smaller than current size {{ (lun_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024) }} GB"
+  when: (lun_gb.size | int) < (lun_info.ontap_info.storage_luns.records[0].space.size | int / 1024 / 1024 / 1024)
 
 - name: Resize lun {{ lun.name }}
   ansible.builtin.include_role:
     name: sgs.ontap.lun
   vars:
     state: present
-    vserver: "{{ vserver_sap_fc }}"
-    flexvol_name: "{{ volume_dict.name }}"
+    vserver: "{{ lun_info.ontap_info.storage_luns.records[0].svm.name}}"
+    flexvol_name: "{{ volume_name }}"
     name: "{{ lun.name }}"
-    size: "{{ lun.size_gb }}"
+    size: "{{ size_gb }}"
     size_unit: gb
-  when: (lun.size_gb | int) > (lun_size_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-- name: Resize volume {{ volume_dict.name }}
-  ansible.builtin.include_role:
-    name: sgs.ontap.volume
-  vars:
-    state: present
-    vserver: "{{ vserver_sap_fc }}"
-    name: "{{ volume_dict.name }}"
-    size: "{{ volume_dict.size_gb }}"
-
-
-- name: Loop over LUNs
-  ansible.builtin.include_tasks:
-    file: loop_luns.yml
-  loop: "{{ volume_dict.luns }}"
-  loop_control:
-    loop_var: lun
-    label: " Resize lun {{ lun.name }}"
-  when: volume_info.ontap_info.storage_volumes.num_records == 1
+    space_reserve: false

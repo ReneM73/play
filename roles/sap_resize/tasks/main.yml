@@ -1,68 +1,23 @@
 ---
-- name: Get info from lun {{ lun }}
-  ansible.builtin.include_role:
-    name: sgs.ontap.rest
-    tasks_from: info.yml
-  vars:
-    gather_subset: storage/luns
-    fields:
-      - svm
-      - location
-      - space
-    parameters:
-      location.logical_unit: "{{ aix_host }}*{{ lun }}*"
-    result_var: lun_info
-
-- name: Fail playbook if more then two LUNs are found
-  ansible.builtin.fail:
-    msg: "More than one LUN found for {{ lun }}. Please specify a more specific LUN name."
-  when: lun_info.ontap_info.storage_luns.num_records > 1
-
-- name: Fail playbook if no LUN is found
-  ansible.builtin.fail:
-    msg: "No LUN found for {{ lun }}. Please check the LUN name."
-  when: lun_info.ontap_info.storage_luns.num_records == 0
-
-- name: Fail playbook if new LUN size is smaller than current size
-  ansible.builtin.fail:
-    msg: "New LUN size {{ size_gb }} GB is smaller than current size {{ (lun_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024) }} GB"
-  when: (size_gb | int) < (lun_info.ontap_info.storage_luns.records[0].space.size | int /1024 / 1024 / 1024)
-
-- name: Resize lun {{ lun_info.ontap_info.storage_luns.records[0].location.logical_unit }}
-  ansible.builtin.include_role:
-    name: sgs.ontap.lun
-  vars:
-    state: present
-    vserver: "{{ lun_info.ontap_info.storage_luns.records[0].svm.name}}"
-    flexvol_name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name}}"
-    name: "{{ lun_info.ontap_info.storage_luns.records[0].name }}"
-    size: "{{ size_gb }}"
-    size_unit: gb
-    space_reserve: false
-
-- name: Get all LUN size in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
-  ansible.builtin.include_role:
-    name: sgs.ontap.rest
-    tasks_from: info.yml
-  vars:
-    gather_subset: storage/luns
-    fields:
-      - space
-    parameters:
-      svm.name: "{{ lun_info.ontap_info.storage_luns.records[0].svm.name }}"
-      location.volume.name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}"
-    result_var: volume_info
-
-- name: SUM of all LUN sizes in the volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
+- name: Convert input variable volume from string to dictionary
   ansible.builtin.set_fact:
-    total_lun_size: "{{ ((volume_info.ontap_info.storage_luns.records | map(attribute='space.size') | sum) * volume_factor) | float | int }}"
+    volume_dict: "{{ volume | from_json }}"
+  when: volume | type_debug == "str"
 
-- name: Resize volume {{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}
-  ansible.builtin.include_role:
-    name: sgs.ontap.volume
-  vars:
-    state: present
-    vserver: "{{ lun_info.ontap_info.storage_luns.records[0].svm.name }}"
-    name: "{{ lun_info.ontap_info.storage_luns.records[0].location.volume.name }}"
-    size: "{{ ((total_lun_size | float) / 1024 / 1024 / 1024) | int }}"
-    size_unit: gb
+- name: Set input variable volume
+  ansible.builtin.set_fact:
+    volume_dict: "{{ volume }}"
+  when: volume | type_debug == "dict"
+
+- name: Set volume name
+  ansible.builtin.set_fact:
+    volume_name: "{{ volume_dict.name }}"
+
+- name: Loop over LUNs
+  ansible.builtin.include_tasks:
+    file: loop_luns.yml
+  loop: "{{ volume_dict.luns }}"
+  loop_control:
+    loop_var: lun
+    label: " Resize lun {{ lun.name }}"
+
